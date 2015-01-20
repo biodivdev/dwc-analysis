@@ -68,16 +68,18 @@
       grid)})
 
 (defn aoo-0
-  [occs]
-  (let [points (occs-to-points occs)]
-    (reduce concat 
-      (mapv
-        (fn [cluster]
-          (cluster-points
-            (make-grid 2 (second cluster))
-            (second cluster)))
-        (cluster-points (make-grid 20 points) points)))))
+  ([occs] (aoo-0 occs 2))
+  ([occs step]
+    (let [points (occs-to-points occs)]
+      (reduce concat 
+        (mapv
+          (fn [cluster]
+            (cluster-points
+              (make-grid step (second cluster))
+              (second cluster)))
+          (cluster-points (make-grid (* step 10) points) points))))))
 
 (defn aoo
-  [occs] (prepare-result (aoo-0 occs)))
+  ([occs] (aoo occs 2))
+  ([occs step] (prepare-result (aoo-0 occs step))))
 
