@@ -96,7 +96,7 @@
         (map
           (fn [cluster]
             (cluster-points
-              (make-grid step (val cluster))
+              (make-grid step (key cluster))
               (val cluster)))
           (reduce merge
             (pmap
