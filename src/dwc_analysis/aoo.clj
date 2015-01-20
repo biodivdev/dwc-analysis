@@ -1,4 +1,5 @@
-(ns dwc-analysis.aoo)
+(ns dwc-analysis.aoo
+  (:require [clojure.core.reducers :as r]))
 
 (defn make-grid 
   ""
@@ -8,15 +9,20 @@
           min-lat (apply min (map first points))
           max-lng (apply max (map second points))
           min-lng (apply min (map second points))]
-      (into []
+      (into-array
         (for [lng (range (- min-lng step) (+ max-lng step) step)
               lat (range (- min-lat step) (+ max-lat step) step)]
+                 (into-array
+                 (mapv
+                   int-array
                    [ 
                     [ lat lng ]
                     [ (+ lat step) lng]
                     [ (+ lat step) (+ lng step)]
                     [ lat (+ lng step)]
                    ]
+                   )
+                 )
         )))))
 
 (defn point-in-cell?
@@ -47,7 +53,11 @@
      (filter filter-occs)
      (mapv #(vector (:decimalLatitude %) (:decimalLongitude %)))
      (mapv (partial mapv #(* % 100)))
-     (mapv (partial mapv int))))
+     (mapv (partial mapv int))
+     (distinct)
+     (mapv int-array)
+     (into-array)
+      ))
 
 (defn filter-grid
   [grid points]
@@ -58,12 +68,10 @@
 
 (defn cluster-points
   [grid points]
-   (mapv
-     #(vector (key %) (val %))
-       (group-by
-         (fn [point]
-           (first (filter (partial cell-has-point? point) grid)))
-         points)))
+   (group-by
+     (fn [point]
+       (first (filter (partial cell-has-point? point) grid)))
+       points))
 
 (defn prepare-result
   ""
@@ -72,9 +80,11 @@
    :grid 
     (map 
       (fn [cluster]
-        {:type "Polygon"
-         :attributes {:count (count (second cluster))}
-         :coordinates [ (mapv (fn [cell] (mapv #(/ % 100) cell)) (first cluster)) ]}
+        {
+         :type "Polygon"
+         :attributes {:count (count (val cluster))}
+         :coordinates [ (mapv (fn [cell] (reverse (mapv #(/ % 100) cell) )) (key cluster)) ]
+         }
        )
       grid)})
 
@@ -83,12 +93,17 @@
   ([occs step]
     (let [points (occs-to-points occs)]
       (reduce concat 
-        (mapv
+        (map
           (fn [cluster]
             (cluster-points
-              (make-grid step (second cluster))
-              (second cluster)))
-          (cluster-points (make-grid (* step 10) points) points))))))
+              (make-grid step (val cluster))
+              (val cluster)))
+          (reduce merge
+            (pmap
+              (fn [points]
+                (cluster-points (make-grid (* step 10) points) points))
+              (partition-all 10 points)))
+          )))))
 
 (defn aoo
   ([occs] (aoo occs 2))

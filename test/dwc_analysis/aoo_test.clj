@@ -5,11 +5,11 @@
 (fact "Grids"
   (count (make-grid 2 [[0 0] [4 4]]) )
       => 16
-  (first (make-grid 2 [[0 0] [4 4]]))
+  (mapv vec (first (make-grid 2 [[0 0] [4 4]])))
     => [[-2 -2] [0 -2] [0 0] [-2 0]])
 
 (fact "Can create a regular GRID"
-  (make-grid 20 [[10 20] [20 40] [20 10]])
+  (mapv (fn [cell] (mapv vec cell)) (make-grid 20 [[10 20] [20 40] [20 10]]))
     => [
         [[-10 -10] [10 -10] [10 10] [-10 10]] 
         [[10 -10] [30 -10] [30 10] [10 10]] 
@@ -46,31 +46,31 @@
 (fact "Filter cells in a grid that have points"
   (let [grid (make-grid 20 [[10 20] [20 40] [20 10]])
         points [[10 10] [15 10] [30 25]]]
-    (filter-grid grid points)
+    (mapv #(mapv vec %) (filter-grid grid points))
      => [[[10 10] [30 10] [30 30] [10 30]] [[30 10] [50 10] [50 30] [30 30]]]
     ))
 
 (fact "Cluster points in cell"
   (let [grid (make-grid 20 [[10 20] [20 40] [20 10]])
         points [[10 10] [15 10] [30 25]]]
-    (cluster-points grid points)
+   (mapv (fn [cell] (hash-map (mapv vec (key cell)) (mapv vec (val cell)) )) (cluster-points grid points))
      => [
-         [
+         {
           [
            [10 10] [30 10] [30 30] [10 30]
           ]
           [
            [10 10] [15 10]
           ]
-         ]
-         [
+         }
+         {
           [
            [30 10] [50 10] [50 30] [30 30]
           ]
           [
            [30 25]
           ]
-         ]
+         }
         ]
     ))
 
@@ -96,7 +96,7 @@
    (count (:grid (aoo [o0 o1 o2]))) => 2
    (count (:grid (aoo [o3]))) => 1
    (mapv (fn[cell] (mapv float cell)) (first (:coordinates (first (:grid (aoo [o3])))) ) )
-     => (mapv (fn [cell] (mapv float cell)) [[10.10 20.20] [10.12 20.20] [10.12 20.22] [10.10 20.22]] )
+     => (mapv (fn [cell] (mapv float cell)) [[20.20 10.10] [20.20 10.12] [20.22 10.12] [20.22 10.10]] )
    ))
 
 (fact "More AOO"
