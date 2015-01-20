@@ -48,15 +48,30 @@
   [ features ]
    (reduce analysis/union features))
 
+(defn filter-occs
+  [occ] 
+   (and 
+     (not (nil? occ))
+     (not (nil? (:decimalLatitude occ)))
+     (not (nil? (:decimalLongitude occ)))
+     (number? (:decimalLatitude occ))
+     (number? (:decimalLongitude occ))))
+
 (defn eoo
   ""
   [ occs ]
-   (let [occs (distinct occs)
+   (let [occs   (filter filter-occs (distinct occs) )
          points (map #(point (c (:decimalLongitude %) (:decimalLatitude %))) occs) 
-         poli (if (>= (count points) 3) 
-                (convex-hull points)
-                (union (map #(buffer-in-meters % 10000) points)))]
-     {:polygon (read-str (io/write-geojson poli))
-      :area    (* (area poli) 10000)}
+         poli   (if (empty? points) nil 
+                  (if (>= (count points) 3) 
+                    (convex-hull points)
+                    (union (map #(buffer-in-meters % 10000) points))
+                  ))
+                  ]
+     (if (nil? poli)
+       {:polygon nil :area 0}
+       {:polygon (read-str (io/write-geojson poli))
+        :area    (* (area poli) 10000)}
+       )
        ))
 

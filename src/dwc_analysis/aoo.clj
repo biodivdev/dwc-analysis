@@ -3,20 +3,21 @@
 (defn make-grid 
   ""
   [step points]
-  (let [max-lat (apply max (map first points))
-        min-lat (apply min (map first points))
-        max-lng (apply max (map second points))
-        min-lng (apply min (map second points))]
-    (into []
-      (for [lng (range (- min-lng step) (+ max-lng step) step)
-            lat (range (- min-lat step) (+ max-lat step) step)]
-                 [ 
-                  [ lat lng ]
-                  [ (+ lat step) lng]
-                  [ (+ lat step) (+ lng step)]
-                  [ lat (+ lng step)]
-                 ]
-        ))))
+  (if (empty? points) []
+    (let [max-lat (apply max (map first points))
+          min-lat (apply min (map first points))
+          max-lng (apply max (map second points))
+          min-lng (apply min (map second points))]
+      (into []
+        (for [lng (range (- min-lng step) (+ max-lng step) step)
+              lat (range (- min-lat step) (+ max-lat step) step)]
+                   [ 
+                    [ lat lng ]
+                    [ (+ lat step) lng]
+                    [ (+ lat step) (+ lng step)]
+                    [ lat (+ lng step)]
+                   ]
+        )))))
 
 (defn point-in-cell?
   [cell point]
@@ -31,9 +32,19 @@
   [point cell]
    (point-in-cell? cell point))
 
+(defn filter-occs
+  [occ] 
+   (and 
+     (not (nil? occ))
+     (not (nil? (:decimalLatitude occ)))
+     (not (nil? (:decimalLongitude occ)))
+     (number? (:decimalLatitude occ))
+     (number? (:decimalLongitude occ))))
+
 (defn occs-to-points
   [occs]  
    (->> occs
+     (filter filter-occs)
      (mapv #(vector (:decimalLatitude %) (:decimalLongitude %)))
      (mapv (partial mapv #(* % 100)))
      (mapv (partial mapv int))))

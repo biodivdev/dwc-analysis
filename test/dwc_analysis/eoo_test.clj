@@ -28,3 +28,8 @@
    (:area (eoo [ o0 o1 o2 ]) ) => (roughly 99)
    ))
 
+(fact "Bad input"
+ (eoo nil) => {:area 0 :polygon nil}
+ (eoo []) => {:area 0 :polygon nil}
+ (eoo [nil {}]) => {:area 0 :polygon nil}
+      )

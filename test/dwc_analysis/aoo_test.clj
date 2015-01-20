@@ -75,6 +75,15 @@
     ))
 
 
+(fact "bad input"
+  (aoo nil)
+    => {:area 0 :grid []}
+  (aoo [])
+    => {:area 0 :grid []}
+  (aoo [{} nil])
+    => {:area 0 :grid []}
+      )
+
 (fact "AOO"
  (let [o0 {:decimalLatitude -10.10 :decimalLongitude -20.20}
        o1 {:decimalLatitude -24.12 :decimalLongitude -21.22}
