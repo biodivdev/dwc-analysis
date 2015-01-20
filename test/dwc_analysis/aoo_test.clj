@@ -89,8 +89,8 @@
        o1 {:decimalLatitude -24.12 :decimalLongitude -21.22}
        o2 {:decimalLatitude -24.1200001 :decimalLongitude -21.2200001}
        o3 {:decimalLatitude 10.10 :decimalLongitude 20.20}]
-   (:area (aoo [o0 o1 o2]))=> 8000
-   (:area (aoo [o0])) => 4000
+   (:area (aoo [o0 o1 o2]))=> 8
+   (:area (aoo [o0])) => 4
    (map #(get-in % [:attributes :count]) (:grid (aoo [o0 o1 o2])) )=> (list 1 2)
    (map #(get-in % [:attributes :count]) (:grid (aoo [o0])) )=> (list 1)
    (count (:grid (aoo [o0 o1 o2]))) => 2
@@ -131,7 +131,7 @@
     {:decimalLatitude -12.941367  :decimalLongitude -41.281258}
     {:decimalLatitude -12.466667  :decimalLongitude -41.433333}
     {:decimalLatitude -12.447222  :decimalLongitude -41.420556}
-   ])) => 56000
+   ])) => 56
 
   (:area (aoo [
     {:decimalLatitude -20.568944  :decimalLongitude -41.784721}
@@ -166,7 +166,7 @@
     {:decimalLatitude -22.356565  :decimalLongitude -44.660074}
     {:decimalLatitude -22.531347  :decimalLongitude -44.568832}
     {:decimalLatitude -22.356565  :decimalLongitude -44.660074}
-           ])) => 20000
+           ])) => 20
 
   )
 

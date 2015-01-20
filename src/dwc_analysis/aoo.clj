@@ -76,7 +76,7 @@
 (defn prepare-result
   ""
   [grid] 
-  {:area (* (count (map first grid) ) 4000)
+  {:area (* (count (map first grid) ) 4)
    :grid 
     (map 
       (fn [cluster]
