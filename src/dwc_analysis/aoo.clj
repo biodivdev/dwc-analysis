@@ -74,7 +74,7 @@
       (fn [cluster]
         {:type "Polygon"
          :attributes {:count (count (second cluster))}
-         :geometry [ (map #(/ % 100) (first cluster) ) ]}
+         :coordinates [ (mapv (fn [cell] (mapv #(/ % 100) cell)) (first cluster)) ]}
        )
       grid)})
 

@@ -87,10 +87,16 @@
 (fact "AOO"
  (let [o0 {:decimalLatitude -10.10 :decimalLongitude -20.20}
        o1 {:decimalLatitude -24.12 :decimalLongitude -21.22}
-       o2 {:decimalLatitude -24.1200001 :decimalLongitude -21.2200001}]
+       o2 {:decimalLatitude -24.1200001 :decimalLongitude -21.2200001}
+       o3 {:decimalLatitude 10.10 :decimalLongitude 20.20}]
    (:area (aoo [o0 o1 o2]))=> 8000
    (:area (aoo [o0])) => 4000
    (map #(get-in % [:attributes :count]) (:grid (aoo [o0 o1 o2])) )=> (list 1 2)
+   (map #(get-in % [:attributes :count]) (:grid (aoo [o0])) )=> (list 1)
+   (count (:grid (aoo [o0 o1 o2]))) => 2
+   (count (:grid (aoo [o3]))) => 1
+   (mapv (fn[cell] (mapv float cell)) (first (:coordinates (first (:grid (aoo [o3])))) ) )
+     => (mapv (fn [cell] (mapv float cell)) [[10.10 20.20] [10.12 20.20] [10.12 20.22] [10.10 20.22]] )
    ))
 
 (fact "More AOO"
