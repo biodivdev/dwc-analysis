@@ -60,14 +60,14 @@
 (defn eoo
   ""
   [ occs ]
-   (let [occs   (filter filter-occs (distinct occs) )
-         points (map #(point (c (:decimalLongitude %) (:decimalLatitude %))) occs) 
+   (let [occs   (distinct (map #(vector (:decimalLongitude %) (:decimalLatitude %)) (filter filter-occs occs)))
+         points (map #(point (c (first %) (last %))) occs) 
          poli   (if (empty? points) nil 
                   (if (>= (count points) 3) 
                     (convex-hull points)
                     (union (map #(buffer-in-meters % 10000) points))
                   ))
-                  ]
+         ]
      (if (nil? poli)
        {:polygon nil :area 0}
        {:polygon (read-str (io/write-geojson poli))
