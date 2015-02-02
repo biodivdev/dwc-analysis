@@ -15,7 +15,7 @@ All functions expect and vector of hash-maps that represent the occurrences, suc
 
 ### AOO
 
-Calculates area of occupancy (in meters) using a grid-size (default to 2 kilometers), and the polygons cells that match with the count of matches per cell in geojson format.
+Calculates area of occupancy (in kilometers) using a grid-size (default to 2 kilometers), and the polygons cells that match with the count of matches per cell in geojson format.
 
   (use 'dwc-analysis.aoo)
 
@@ -30,7 +30,7 @@ Calculates area of occupancy (in meters) using a grid-size (default to 2 kilomet
 
 ### EOO
 
-Calculates the extent of occurrencce and returns the mininum convex polygon:
+Calculates the extent of occurrencce and returns the mininum convex polygon and area in kilometers:
 
   (use 'dwc-analysis.eoo)
    
