@@ -38,6 +38,10 @@ Calculates the extent of occurrencce and returns the mininum convex polygon and 
   => {:area 100000
       :polygon {:type "Polygon" :coordinates []}}
 
+### Populations
+
+### Risk Analysis
+
 ## License
 
 MIT
