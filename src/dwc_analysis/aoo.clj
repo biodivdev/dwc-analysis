@@ -75,37 +75,6 @@
        (first (filter (partial cell-has-point? point) grid)))
        points))
 
-(defn prepare-result
-  ""
-  [grid] 
-  {:area (* (count (map first grid) ) 4)
-   :grid 
-    (map 
-      (fn [cluster]
-        {
-         :type "Polygon"
-         :attributes {:count (count (val cluster))}
-         :coordinates [ (mapv (fn [cell] (reverse (mapv #(/ % 100) cell) )) (key cluster)) ]
-         }
-       )
-      grid)})
-
-(defn aoo-0
-  ([occs] (aoo-0 occs 2))
-  ([occs step]
-    (let [points (occs-to-points occs)]
-      (reduce concat 
-        (map
-          (fn [cluster]
-            (cluster-points
-              (make-grid step (key cluster))
-              (val cluster)))
-          (reduce merge
-            (pmap
-              (fn [points]
-                (cluster-points (make-grid (* step 10) points) points))
-              (partition-all 10 points)))
-          )))))
 
 (def aoo-1
  (graph/compile
@@ -123,11 +92,12 @@
          (map #(cluster-points (make-grid step (key %)) (val %)))
          (reduce concat)))
    :area 
-    (fnk [small-grid]
+    (fnk [small-grid step]
       (->> small-grid
            (map first)
            (count)
-           (* 4))) 
+           (* (Math/pow step 2))
+           (int))) 
    :grid
      (fnk [small-grid]
       (map 

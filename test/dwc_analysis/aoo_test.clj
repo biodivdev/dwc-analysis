@@ -91,6 +91,7 @@
        o3 {:decimalLatitude 10.10 :decimalLongitude 20.20}]
    (:area (aoo [o0 o1 o2]))=> 8
    (:area (aoo [o0])) => 4
+   (:area (aoo [o0] 4)) => 16
    (map #(get-in % [:attributes :count]) (:grid (aoo [o0 o1 o2])) )=> (list 1 2)
    (map #(get-in % [:attributes :count]) (:grid (aoo [o0])) )=> (list 1)
    (count (:grid (aoo [o0 o1 o2]))) => 2
