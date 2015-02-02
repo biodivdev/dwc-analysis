@@ -1,4 +1,6 @@
 (ns dwc-analysis.aoo
+  (:use plumbing.core)
+  (:require [plumbing.graph :as graph] [schema.core :as s])
   (:require [clojure.core.reducers :as r]))
 
 (defn make-grid 
@@ -105,7 +107,43 @@
               (partition-all 10 points)))
           )))))
 
+(def aoo-1
+ (graph/compile
+  {:points
+     (fnk [occurrences] (occs-to-points occurrences))
+   :big-grid 
+     (fnk [points step]
+       (->> points
+         (partition-all 10)
+         (pmap #(cluster-points (make-grid (* step 10) %) %))
+         (reduce merge)))
+   :small-grid 
+     (fnk [big-grid step]
+       (->> big-grid
+         (map #(cluster-points (make-grid step (key %)) (val %)))
+         (reduce concat)))
+   :area 
+    (fnk [small-grid]
+      (->> small-grid
+           (map first)
+           (count)
+           (* 4))) 
+   :grid
+     (fnk [small-grid]
+      (map 
+        (fn [cluster]
+         {
+         :type "Polygon"
+         :attributes {:count (count (val cluster))}
+         :coordinates [ (mapv (fn [cell] (reverse (mapv #(/ % 100) cell) )) (key cluster)) ]
+         }
+        ) small-grid))
+   }
+  )
+)
+
+
 (defn aoo
   ([occs] (aoo occs 2))
-  ([occs step] (prepare-result (aoo-0 occs step))))
+  ([occs step] (aoo-1 {:occurrences occs :step step })))
 

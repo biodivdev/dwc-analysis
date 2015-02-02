@@ -77,11 +77,11 @@
 
 (fact "bad input"
   (aoo nil)
-    => {:area 0 :grid []}
+    => (contains {:area 0 :grid []} )
   (aoo [])
-    => {:area 0 :grid []}
+    => (contains {:area 0 :grid []} )
   (aoo [{} nil])
-    => {:area 0 :grid []}
+    => (contains {:area 0 :grid []} )
       )
 
 (fact "AOO"
