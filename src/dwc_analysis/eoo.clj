@@ -1,52 +1,7 @@
 (ns dwc-analysis.eoo
-  (:use [clojure.data.json :only [read-str write-str]])
-  (:require [cljts.transform :as transform])
-  (:require [cljts.analysis :as analysis])
-  (:require [cljts.relation :as relation])
-  (:require [cljts.geom :as geom])
-  (:require [cljts.io :as io])
-  (:import [com.vividsolutions.jts.geom
-            GeometryFactory
-            PrecisionModel
-            PrecisionModel$Type
-            Coordinate
-            LinearRing
-            Point
-            Polygon
-            Geometry]))
-
-(def point geom/point)
-(def c geom/c)
-(def area geom/area)
-(def utm transform/utmzone)
-
-(defn area-in-meters
-  ""
-  ([polygon] (area-in-meters polygon "EPSG:4326"))
-  ([polygon crs] 
-   (area
-     (transform/reproject
-       polygon crs (utm polygon)))))
-
-(defn convex-hull
-  ""
-  [points] 
-   (analysis/convex-hull 
-     (reduce analysis/union points)))
-
-(defn buffer-in-meters
-  ""
-  ([point meters] (buffer-in-meters point meters "EPSG:4326"))
-  ([point meters crs]
-    (transform/reproject 
-      (analysis/buffer
-        (transform/reproject point crs (utm point))
-        meters) (utm point) crs)))
-
-(defn union
-  ""
-  [ features ]
-   (reduce analysis/union features))
+  (:use plumbing.core)
+  (:require [plumbing.graph :as graph] [schema.core :as s])
+  (:use dwc-analysis.geo))
 
 (defn filter-occs
   [occ] 
@@ -57,21 +12,35 @@
      (number? (:decimalLatitude occ))
      (number? (:decimalLongitude occ))))
 
+(def eoo-1
+  (graph/compile
+    {:occs
+     (fnk [occurrences] 
+       (->> occurrences
+         (filter filter-occs)
+         (map #(vector (:decimalLongitude %) (:decimalLatitude %))) 
+         (distinct)))
+     :points 
+      (fnk [occs]
+       (map #(point (c (first %) (last %))) occs))
+     :raw-polygon
+      (fnk [points]
+        (if (empty? points) nil
+          (if (>= (count points) 3)
+            (convex-hull points)
+            (union (map #(buffer-in-meters % 10000) points)))))
+     :polygon 
+      (fnk [raw-polygon]
+        (as-geojson raw-polygon))
+     :area 
+      (fnk [raw-polygon]
+        (if (nil? raw-polygon) 0
+          (* (area raw-polygon) 10000)))
+    }
+  )
+)
+ 
 (defn eoo
   ""
-  [ occs ]
-   (let [occs   (distinct (map #(vector (:decimalLongitude %) (:decimalLatitude %)) (filter filter-occs occs)))
-         points (map #(point (c (first %) (last %))) occs) 
-         poli   (if (empty? points) nil 
-                  (if (>= (count points) 3) 
-                    (convex-hull points)
-                    (union (map #(buffer-in-meters % 10000) points))
-                  ))
-         ]
-     (if (nil? poli)
-       {:polygon nil :area 0}
-       {:polygon (read-str (io/write-geojson poli))
-        :area    (* (area poli) 10000)}
-       )
-       ))
+  [occs] (eoo-1 {:occurrences occs}))
 

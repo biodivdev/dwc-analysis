@@ -37,7 +37,7 @@
       )
 
 (fact "Bad input"
- (eoo nil) => {:area 0 :polygon nil}
- (eoo []) => {:area 0 :polygon nil}
- (eoo [nil {}]) => {:area 0 :polygon nil}
-      )
+ (eoo nil) => (contains {:area 0 :polygon nil} )
+ (eoo []) => (contains {:area 0 :polygon nil} )
+ (eoo [nil {}]) => (contains {:area 0 :polygon nil})
+)
