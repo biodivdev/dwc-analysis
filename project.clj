@@ -4,6 +4,7 @@
   :license {:name "MIT"}
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/data.json "0.2.5"]
+                 [prismatic/plumbing "0.3.7"]
                  [diogok/cljts "0.4.3"]]
   :repositories [["clojars" {:sign-releases false}]]
   :profiles {:uberjar {:aot :all}
