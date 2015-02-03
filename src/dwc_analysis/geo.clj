@@ -19,6 +19,14 @@
 (def c geom/c)
 (def area geom/area)
 (def utm transform/utmzone)
+(def intersects? relation/intersects?)
+
+(defn distance-in-meters
+  ([p0 p1] (distance-in-meters p0 p1 "EPSG:4326"))
+  ([p0 p1 crs]
+    (analysis/distance
+      (transform/reproject p0 crs (utm p0))
+      (transform/reproject p1 crs (utm p1)))))
 
 (defn area-in-meters
   ""
@@ -52,5 +60,5 @@
   ""
   [feature]
   (if (nil? feature) nil
-    (read-str (io/write-geojson feature))))
+    (read-str (io/write-geojson feature) :key-fn keyword)))
 
