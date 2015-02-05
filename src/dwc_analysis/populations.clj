@@ -53,8 +53,7 @@
      :buffers 
       (fnk [buffers-raw]
          (->> buffers-raw
-           (mapv as-geojson)
-           (mapv #(hash-map :type "Feature" :properties {} :geometry %))
+           (mapv #(hash-map :type "Feature" :properties {:area (/ (area-in-meters %) 1000)} :geometry (as-geojson % )))
            (hash-map :type "FeatureCollection" :features)))
      :populations-raw
       (fnk [buffers-raw] 
@@ -67,8 +66,7 @@
      :populations 
      (fnk [populations-raw] 
            (->> populations-raw
-             (mapv as-geojson)
-             (mapv #(hash-map :type "Feature" :properties {} :geometry %))
+             (mapv #(hash-map :type "Feature" :properties {:area (/ (area-in-meters %) 1000)} :geometry (as-geojson % )))
              (hash-map :type "FeatureCollection" :features)))
      :n_populations
       (fnk [populations]

@@ -1,4 +1,4 @@
-(defproject dwc-analysis "0.0.10"
+(defproject dwc-analysis "0.0.11"
   :description "Analysis on darwincore occurrences: EOO, AOO and Populations."
   :url "http://github.com/CNCFlora/dwc-analysis"
   :license {:name "MIT"}

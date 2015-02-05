@@ -60,4 +60,4 @@
 
 (defn assess
   [data]
-  {:category "" :criteria "" :notes []})
+  {:category "" :criteria "" :all []})

@@ -40,5 +40,5 @@
   (locations 11) => (contains {:category ""})
   )
 
-(fact "Can choose best assessment"
+(fact "Can choose best/worst assessment"
   (assess {:aoo 1 }))
