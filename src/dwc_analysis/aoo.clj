@@ -100,14 +100,24 @@
            (int))) 
    :grid
      (fnk [small-grid]
-      (map 
-        (fn [cluster]
-         {
-         :type "Polygon"
-         :attributes {:count (count (val cluster))}
-         :coordinates [ (mapv (fn [cell] (reverse (mapv #(/ % 100) cell) )) (key cluster)) ]
-         }
-        ) small-grid))
+      { 
+       :type "FeatureCollection"
+       :features
+        (map 
+          (fn [cluster]
+           {
+            :type "Feature"
+            :properties {}
+            :geometry
+             {
+             :type "Polygon"
+             :coordinates [(mapv (fn [cell] (reverse (mapv #(/ % 100) cell) )) (key cluster))]
+             }
+           }
+          ) small-grid
+        )
+      }
+     )
    }
   )
 )
@@ -115,5 +125,8 @@
 
 (defn aoo
   ([occs] (aoo occs 2))
-  ([occs step] (aoo-1 {:occurrences occs :step step })))
+  ([occs step] 
+   (-> (aoo-1 {:occurrences occs :step step })
+       (dissoc :small-grid :big-grid :points :occurrences)))
+   )
 

@@ -1,4 +1,5 @@
 (ns dwc-analysis.aoo-test
+  (:use [clojure.data.json :only [read-str write-str]])
   (:use dwc-analysis.aoo)
   (:use midje.sweet))
 
@@ -77,12 +78,15 @@
 
 (fact "bad input"
   (aoo nil)
-    => (contains {:area 0 :grid []} )
+    => (contains {:area 0 } )
   (aoo [])
-    => (contains {:area 0 :grid []} )
+    => (contains {:area 0 } )
   (aoo [{} nil])
-    => (contains {:area 0 :grid []} )
+    => (contains {:area 0 } )
       )
+
+(fact "Good output"
+  (write-str (aoo [{:decimalLatitude 10.10 :decimalLongitude 20.20}])))
 
 (fact "AOO"
  (let [o0 {:decimalLatitude -10.10 :decimalLongitude -20.20}
@@ -92,11 +96,9 @@
    (:area (aoo [o0 o1 o2]))=> 8
    (:area (aoo [o0])) => 4
    (:area (aoo [o0] 4)) => 16
-   (map #(get-in % [:attributes :count]) (:grid (aoo [o0 o1 o2])) )=> (list 1 2)
-   (map #(get-in % [:attributes :count]) (:grid (aoo [o0])) )=> (list 1)
-   (count (:grid (aoo [o0 o1 o2]))) => 2
-   (count (:grid (aoo [o3]))) => 1
-   (mapv (fn[cell] (mapv float cell)) (first (:coordinates (first (:grid (aoo [o3])))) ) )
+   (count (get-in (aoo [o0 o1 o2]) [:grid :features])) => 2
+   (count (get-in (aoo [o3]) [:grid :features])) => 1
+   (mapv (fn[cell] (mapv float cell)) (first (:coordinates (:geometry (first (:features (:grid (aoo [o3])) )))  )) )
      => (mapv (fn [cell] (mapv float cell)) [[20.20 10.10] [20.20 10.12] [20.22 10.12] [20.22 10.10]] )
    ))
 
