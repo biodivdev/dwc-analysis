@@ -1,4 +1,5 @@
 (use 'dwc-analysis.aoo)
+(use [ 'dwc-analysis.populations :only ['populations] ])
 
 (println "Go")
 (Thread/sleep 5000)
@@ -731,6 +732,9 @@
 )
 (println "Vicia faba with 300 points")
 (time (aoo vicia300))
+
+(println "Vicia faba population with 300 points")
+(time (populations vicia300))
 
 (shutdown-agents)
 (println "Done")

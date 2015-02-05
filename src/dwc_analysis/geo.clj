@@ -20,13 +20,19 @@
 (def area geom/area)
 (def utm transform/utmzone)
 (def intersects? relation/intersects?)
+(def distance analysis/distance)
+
+(defn to-utm
+  ([p] (to-utm p "EPSG:4326"))
+  ([p crs]
+    (transform/reproject p crs (utm p))))
 
 (defn distance-in-meters
   ([p0 p1] (distance-in-meters p0 p1 "EPSG:4326"))
   ([p0 p1 crs]
     (analysis/distance
-      (transform/reproject p0 crs (utm p0))
-      (transform/reproject p1 crs (utm p1)))))
+      (to-utm p0 crs )
+      (to-utm p1 crs ))))
 
 (defn area-in-meters
   ""
