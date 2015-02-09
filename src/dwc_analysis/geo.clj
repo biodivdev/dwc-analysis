@@ -22,6 +22,10 @@
 (def intersects? relation/intersects?)
 (def distance analysis/distance)
 
+(defn to-point
+  [p] 
+  (point (c (:decimalLongitude p) (:decimalLatitude p))))
+
 (defn to-utm
   ([p] (to-utm p "EPSG:4326"))
   ([p crs]

@@ -80,7 +80,7 @@
             :recent   (conglomerates/conglomerates (:recent points))})
     :risk-assessment 
       (fnk [points aoo eoo conglomerates]
-         (risk/assess {:occurrences (:all points) 
+         (risk/assess {:occurrence_count (count (:all points))
                        :aoo (:area (:all aoo)) 
                        :eoo (:area (:all eoo))
                        :decline (or (> (:area (:historic aoo)) (:area (:recent aoo)))
