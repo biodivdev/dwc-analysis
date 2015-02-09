@@ -1,26 +1,38 @@
-(ns dwc-analysis.risk)
+(ns dwc-analysis.risk
+  (:use plumbing.core)
+  (:require [plumbing.graph :as graph] [schema.core :as s]))
 
 (defn occ-count
   [number] 
    (if (<= number 2)
-     {:category "DD" :note "More information is required."}
+     {:category "DD"}
      {:category ""})
    )
+
+(def table
+  {"EX" 0
+   "EW" 1
+   "CR" 2
+   "EN" 3
+   "VU" 4
+   "NT" 5
+   "LC" 6
+   "DD" 7})
 
 (defn eoo
   [value] 
   (if (< value 100)
     {:category "CR" :criteria "B1" 
-     :note "Extent of occurrence less them 100km² can classify the sepecie as Criticaly Endangered." }
+     }
     (if (< value 5000)
       {:category "EN" :criteria "B1"
-       :note "Extent of occurrence less them 5000km² can classify the sepecie as Endangered." }
+       }
       (if (< value 20000)
         {:category "VU" :criteria "B1"
-         :note "Extent of occurrence less them 20000km² can classify the sepecie as Vulnerable." }
+         }
         (if (< value 50000)
-          {:category "NT" :criteria "" :note "Extent of occurrence large enough (< 50000km²) to be out of risk, but near it. "}
-          {:category "LC" :criteria "" :note "Extent of occurrence large enough (>= 50000km²) to be classified as Least Concearn."}
+          {:category "NT" :criteria ""}
+          {:category "LC" :criteria ""}
           )
         )
       )
@@ -30,14 +42,14 @@
 (defn aoo
   [value] 
   (if (< value 10)
-    {:category "CR" :criteria "B2" :note "Area of occupancy of less them 10km² classify as Critically Endangered."}
+    {:category "CR" :criteria "B2"}
     (if (< value 500)
-      {:category "EN" :criteria "B2" :note "Area of occupancy of less them 500km² classify as Endangered."}
+      {:category "EN" :criteria "B2"}
       (if (< value 2000)
-        {:category "VU" :criteria "B2" :note "Area of occupancy of less them 2000km² classify as Vulnerable."}
+        {:category "VU" :criteria "B2"}
         (if (< value 5000)
-          {:category "NT" :criteria "" :note "Area of occupancy above risk, but near it (< 5000km²)."}
-          {:category "LC" :criteria "" :note "Area of occupancy above risk (>= 5000km²)."}
+          {:category "NT" :criteria ""}
+          {:category "LC" :criteria ""}
           )
         )
       )
@@ -60,4 +72,12 @@
 
 (defn assess
   [data]
-  {:category "" :criteria "" :all []})
+  (->> (list 
+        (if (:eoo data) (assoc (eoo (:eoo data)) :reason "EOO") nil)
+        (if (:aoo data) (assoc (aoo (:aoo data)) :reason "AOO") nil)
+        (if (:locations data) (assoc (locations (:locations data)) :reason "locations") nil))
+    (filter #(not (nil? %)))
+    (map #(if (and (or (= (:reason %) "AOO") (= (:reason %) "EOO") ) (:decline data)) (assoc % :criteria (str (:criteria %) "b") :reason (str "Decline of " (:reason %))) %))
+    (sort-by #(table (:category %))))
+)
+

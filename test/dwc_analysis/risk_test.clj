@@ -3,8 +3,8 @@
   (:use midje.sweet))
 
 (fact "Can DD low occurrences"
-  (occ-count 1) => {:category "DD" :note "More information is required."}
-  (occ-count 2) => {:category "DD" :note "More information is required."}
+  (occ-count 1) => {:category "DD"}
+  (occ-count 2) => {:category "DD"}
   (occ-count 3) => {:category ""}
   (occ-count 4) => {:category ""})
 
@@ -41,4 +41,21 @@
   )
 
 (fact "Can choose best/worst assessment"
-  (assess {:aoo 1 }))
+  (assess {:aoo 1}) 
+   => [{:category "CR" :criteria "B2" :reason "AOO"}]
+  (assess {:aoo 10}) 
+    => [{:category "EN" :criteria "B2" :reason "AOO"}]
+  (assess {:aoo 10 :decline true}) 
+    => [{:category "EN" :criteria "B2b" :reason "Decline of AOO" }]
+  (assess {:aoo 10 :eoo 10 :decline true}) 
+    => [{:category "CR" :criteria "B1b" :reason "Decline of EOO"} {:category "EN" :criteria "B2b" :reason "Decline of AOO"}]
+  (assess {:aoo 10 :eoo 10}) 
+    => [{:category "CR" :criteria "B1" :reason "EOO"} {:category "EN" :criteria "B2" :reason "AOO"}]
+  (assess {:aoo 10 :eoo 100}) 
+    => [{:category "EN" :criteria "B1" :reason "EOO"} {:category "EN" :criteria "B2" :reason "AOO"}]
+  (assess {:aoo 10 :eoo 6000}) 
+    => [{:category "EN" :criteria "B2" :reason "AOO"} {:category "VU" :criteria "B1" :reason "EOO"}]
+  (assess {:aoo 10 :eoo 6000 :decline true}) 
+    => [{:category "EN" :criteria "B2b" :reason "Decline of AOO"} {:category "VU" :criteria "B1b" :reason "Decline of EOO"}]
+  )
+
