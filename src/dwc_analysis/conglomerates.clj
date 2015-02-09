@@ -1,4 +1,4 @@
-(ns dwc-analysis.populations
+(ns dwc-analysis.conglomerates
   (:use dwc-analysis.geo)
   (:use plumbing.core)
   (:require [cljts.geom :as g])
@@ -34,7 +34,7 @@
                   a (+ (* (Math/sin (/ dlat 2)) (Math/sin (/ dlat 2))) (* (Math/sin (/ dlon 2)) (Math/sin (/ dlon 2)) (Math/cos lat1) (Math/cos lat2)))]
           (* R 2 (Math/asin (Math/sqrt a)))))
 
-(def populations-0
+(def conglomerates-0
   (graph/compile
     {:points
       (fnk [occurrences] 
@@ -46,7 +46,7 @@
      :max-distance
       (fnk [points]
         (let [points-utm (map to-utm points)]
-          (/ (apply max 1000 (flatten (for [p0 points-utm] (for [p1 points-utm] (distance p0 p1))))) 1000)))
+          (/ (apply max 1 (flatten (for [p0 points-utm] (for [p1 points-utm] (distance p0 p1))))) 1000)))
      :buffers-raw
       (fnk [points max-distance]
         (mapv #(buffer-in-meters % (* (* max-distance 0.1 ) 1000)) points))
@@ -55,7 +55,7 @@
          (->> buffers-raw
            (mapv #(hash-map :type "Feature" :properties {:area (/ (area-in-meters %) 1000)} :geometry (as-geojson % )))
            (hash-map :type "FeatureCollection" :features)))
-     :populations-raw
+     :conglomerates-raw
       (fnk [buffers-raw] 
         (let [all (union buffers-raw)
               n   (.getNumGeometries all)]
@@ -63,23 +63,23 @@
             (if (= n 1) (list all)
              (for [i (range 0 n)]
                (.getGeometryN all i))))))
-     :populations 
-     (fnk [populations-raw] 
-           (->> populations-raw
+     :conglomerates 
+     (fnk [conglomerates-raw] 
+           (->> conglomerates-raw
              (mapv #(hash-map :type "Feature" :properties {:area (/ (area-in-meters %) 1000)} :geometry (as-geojson % )))
              (hash-map :type "FeatureCollection" :features)))
-     :n_populations
-      (fnk [populations]
-          (count (:features populations)))
+     :n_conglomerates
+      (fnk [conglomerates]
+          (count (:features conglomerates)))
      :area 
-      (fnk [populations-raw]
-        (/ (apply + 0 (map area-in-meters populations-raw)) 1000))
+      (fnk [conglomerates-raw]
+        (/ (apply + 0 (map area-in-meters conglomerates-raw)) 1000))
      }))
 
-(defn populations
+(defn conglomerates
   ""
   [occs] (if (empty? (filter filter-occs occs))
-          {:max-distance 0 :populations [] :area 0}
-          (-> (populations-0 {:occurrences occs}) 
-              (dissoc :populations-raw :buffers-raw :points :occurrences :occs))))
+          {:max-distance 0 :conglomerates [] :area 0}
+          (-> (conglomerates-0 {:occurrences occs}) 
+              (dissoc :conglomerates-raw :buffers-raw :points :occurrences :occs))))
 
