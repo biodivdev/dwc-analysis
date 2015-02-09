@@ -55,7 +55,7 @@
          (->> buffers-raw
            (mapv #(hash-map :type "Feature" :properties {:area (/ (area-in-meters %) 1000)} :geometry (as-geojson % )))
            (hash-map :type "FeatureCollection" :features)))
-     :conglomerates-raw
+     :conglomerates
       (fnk [buffers-raw] 
         (let [all (union buffers-raw)
               n   (.getNumGeometries all)]
@@ -63,17 +63,17 @@
             (if (= n 1) (list all)
              (for [i (range 0 n)]
                (.getGeometryN all i))))))
-     :conglomerates 
-     (fnk [conglomerates-raw] 
-           (->> conglomerates-raw
+     :geo 
+     (fnk [conglomerates] 
+           (->> conglomerates
              (mapv #(hash-map :type "Feature" :properties {:area (/ (area-in-meters %) 1000)} :geometry (as-geojson % )))
              (hash-map :type "FeatureCollection" :features)))
      :n_conglomerates
       (fnk [conglomerates]
           (count (:features conglomerates)))
      :area 
-      (fnk [conglomerates-raw]
-        (/ (apply + 0 (map area-in-meters conglomerates-raw)) 1000))
+      (fnk [conglomerates]
+        (/ (apply + 0 (map area-in-meters conglomerates)) 1000))
      }))
 
 (defn conglomerates

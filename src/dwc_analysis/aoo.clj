@@ -86,20 +86,20 @@
          (partition-all 10)
          (pmap #(cluster-points (make-grid (* step 10) %) %))
          (reduce merge)))
-   :small-grid 
+   :grid 
      (fnk [big-grid step]
        (->> big-grid
          (map #(cluster-points (make-grid step (key %)) (val %)))
          (reduce concat)))
    :area 
-    (fnk [small-grid step]
-      (->> small-grid
+    (fnk [grid step]
+      (->> grid
            (map first)
            (count)
            (* (Math/pow step 2))
            (int))) 
-   :grid
-     (fnk [small-grid]
+   :geo
+     (fnk [grid]
       { 
        :type "FeatureCollection"
        :features
@@ -114,7 +114,7 @@
              :coordinates [(mapv (fn [cell] (reverse (mapv #(/ % 100) cell) )) (key cluster))]
              }
            }
-          ) small-grid
+          ) grid
         )
       }
      )

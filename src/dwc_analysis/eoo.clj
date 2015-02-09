@@ -33,7 +33,7 @@
       (fnk [raw-polygon]
         (if (nil? raw-polygon) 0
           (* (area raw-polygon) 10000)))
-     :polygon 
+     :geo 
       (fnk [raw-polygon area]
          {:type "Feature"
           :properties {:area area}

@@ -96,9 +96,9 @@
    (:area (aoo [o0 o1 o2]))=> 8
    (:area (aoo [o0])) => 4
    (:area (aoo [o0] 4)) => 16
-   (count (get-in (aoo [o0 o1 o2]) [:grid :features])) => 2
-   (count (get-in (aoo [o3]) [:grid :features])) => 1
-   (mapv (fn[cell] (mapv float cell)) (first (:coordinates (:geometry (first (:features (:grid (aoo [o3])) )))  )) )
+   (count (get-in (aoo [o0 o1 o2]) [:geo :features])) => 2
+   (count (get-in (aoo [o3]) [:geo :features])) => 1
+   (mapv (fn[cell] (mapv float cell)) (first (:coordinates (:geometry (first (:features (:geo (aoo [o3])) )))  )) )
      => (mapv (fn [cell] (mapv float cell)) [[20.20 10.10] [20.20 10.12] [20.22 10.12] [20.22 10.10]] )
    ))
 
