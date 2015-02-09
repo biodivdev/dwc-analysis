@@ -2,13 +2,6 @@
   (:use plumbing.core)
   (:require [plumbing.graph :as graph] [schema.core :as s]))
 
-(defn occ-count
-  [number] 
-   (if (<= number 2)
-     {:category "DD"}
-     {:category ""})
-   )
-
 (def table
   {"EX" 0
    "EW" 1
@@ -17,7 +10,13 @@
    "VU" 4
    "NT" 5
    "LC" 6
-   "DD" 7})
+   "DD" 7
+   ""   8})
+
+(defn occ-count
+  [number] 
+   (if (<= number 2)
+     {:category "DD" :criteria ""}))
 
 (defn eoo
   [value] 
@@ -73,10 +72,11 @@
 (defn assess
   [data]
   (->> (list 
-        (if (:eoo data) (assoc (eoo (:eoo data)) :reason "EOO") nil)
-        (if (:aoo data) (assoc (aoo (:aoo data)) :reason "AOO") nil)
-        (if (:locations data) (assoc (locations (:locations data)) :reason "locations") nil))
-    (filter #(not (nil? %)))
+        (if (:eoo data) (assoc (eoo (:eoo data)) :reason "EOO"))
+        (if (:aoo data) (assoc (aoo (:aoo data)) :reason "AOO"))
+        (if (:locations data) (assoc (locations (:locations data)) :reason "Locations"))
+        (if (:occurrence_count data) (assoc (occ-count (:occurrence_count data)) :reason "Few occurrences")))
+    (filter #(and (not (nil? %)) (not (nil? (:category %))) (not (empty? (:category %)))))
     (map #(if (and (or (= (:reason %) "AOO") (= (:reason %) "EOO") ) (:decline data)) (assoc % :criteria (str (:criteria %) "b") :reason (str "Decline of " (:reason %))) %))
     (sort-by #(table (:category %))))
 )

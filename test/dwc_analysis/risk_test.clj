@@ -3,10 +3,10 @@
   (:use midje.sweet))
 
 (fact "Can DD low occurrences"
-  (occ-count 1) => {:category "DD"}
-  (occ-count 2) => {:category "DD"}
-  (occ-count 3) => {:category ""}
-  (occ-count 4) => {:category ""})
+  (occ-count 1) => {:category "DD" :criteria ""}
+  (occ-count 2) => {:category "DD" :criteria ""}
+  (occ-count 3) => nil
+  (occ-count 4) => nil)
 
 (fact "Can assess EOO"
   (eoo 10) => (contains {:category "CR" :criteria "B1"} )
@@ -57,5 +57,9 @@
     => [{:category "EN" :criteria "B2" :reason "AOO"} {:category "VU" :criteria "B1" :reason "EOO"}]
   (assess {:aoo 10 :eoo 6000 :decline true}) 
     => [{:category "EN" :criteria "B2b" :reason "Decline of AOO"} {:category "VU" :criteria "B1b" :reason "Decline of EOO"}]
+  (assess {:aoo 10 :eoo 6000 :decline true :occurrence_count 1}) 
+    => [{:category "EN" :criteria "B2b" :reason "Decline of AOO"} {:category "VU" :criteria "B1b" :reason "Decline of EOO"} {:category "DD" :criteria "" :reason "Few occurrences"}]
+  (assess {:aoo 10 :eoo 6000 :decline true :occurrence_count 10}) 
+    => [{:category "EN" :criteria "B2b" :reason "Decline of AOO"} {:category "VU" :criteria "B1b" :reason "Decline of EOO"} ]
   )
 
