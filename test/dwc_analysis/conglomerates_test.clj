@@ -60,7 +60,7 @@
          pops (conglomerates occs)]
      (:buffers pops) => (resource "Vicia_faba.buffers.geojson")
      (:geo pops) => (resource "Vicia_faba.pops.geojson")
-     (:n_conglomerates pops) => 7
+     (:count pops) => 7
    ))
 
 

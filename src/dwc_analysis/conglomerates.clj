@@ -68,9 +68,9 @@
            (->> conglomerates
              (mapv #(hash-map :type "Feature" :properties {:area (/ (area-in-meters %) 1000)} :geometry (as-geojson % )))
              (hash-map :type "FeatureCollection" :features)))
-     :n_conglomerates
+     :count
       (fnk [geo]
-          (count (:features geo)))
+        (count (:features geo)))
      :area 
       (fnk [conglomerates]
         (/ (apply + 0 (map area-in-meters conglomerates)) 1000))
@@ -79,7 +79,7 @@
 (defn conglomerates
   ""
   [occs] (if (empty? (filter filter-occs occs))
-          {:max-distance 0 :conglomerates [] :area 0 :geo {:type "FeatureCollection" :features []}}
+          {:max-distance 0 :conglomerates [] :area 0 :geo {:type "FeatureCollection" :features []} :count 0}
           (-> (conglomerates-0 {:occurrences occs}) 
               (dissoc :conglomerates :buffers-raw :points :occurrences :occs))))
 
