@@ -10,14 +10,6 @@
 (defn occ?
   [occ] (not (nil? occ)))
 
-(defn point?
-  [occ] 
-   (and 
-     (not (nil? occ))
-     (not (nil? (:decimalLatitude occ)))
-     (not (nil? (:decimalLongitude occ)))
-     (number? (:decimalLatitude occ))
-     (number? (:decimalLongitude occ))))
 
 (defn recent?
   [occ] (or (= (:year occ) nil) (not (number? (:year occ))) (>= (:year occ) (- 2015 100))))
@@ -67,11 +59,11 @@
       (fnk [points eoo]
         (let [points-utm   (map to-utm (map to-point (:all points)))
               max-distance (apply max 1 (flatten (for [p0 points-utm] (for [p1 points-utm] (distance p0 p1)))))
-              cell_size (* max-distance 0.1)]
-           {:cell_size cell_size 
-            :all      (aoo/aoo (:historic (:all points)))
-            :historic (aoo/aoo (:historic (:recent points)) cell_size)
-            :recent   (aoo/aoo (:recent (:historic points)) cell_size)}
+              cell_size  (/ (* max-distance 0.1) 1000)]
+           {:cell_size  cell_size
+            :all      (aoo/aoo (:all points) cell_size)
+            :historic (aoo/aoo (:historic points) cell_size)
+            :recent   (aoo/aoo (:recent points) cell_size)}
           ))
     :conglomerates 
       (fnk [points]

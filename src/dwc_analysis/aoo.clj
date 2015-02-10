@@ -1,5 +1,6 @@
 (ns dwc-analysis.aoo
   (:use plumbing.core)
+  (:use dwc-analysis.geo)
   (:require [plumbing.graph :as graph] [schema.core :as s])
   (:require [clojure.core.reducers :as r]))
 
@@ -40,19 +41,10 @@
   [point cell]
    (point-in-cell? cell point))
 
-(defn filter-occs
-  [occ] 
-   (and 
-     (not (nil? occ))
-     (not (nil? (:decimalLatitude occ)))
-     (not (nil? (:decimalLongitude occ)))
-     (number? (:decimalLatitude occ))
-     (number? (:decimalLongitude occ))))
-
 (defn occs-to-points
   [occs]  
    (->> occs
-     (filter filter-occs)
+     (filter point?)
      (mapv #(vector (:decimalLatitude %) (:decimalLongitude %)))
      (mapv (partial mapv #(* % 100)))
      (mapv (partial mapv int))

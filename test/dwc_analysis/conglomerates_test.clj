@@ -63,4 +63,8 @@
      (:count pops) => 7
    ))
 
-
+  (fact "Vicia faba 2"
+   (let [occs (resource "Vplus.json")
+         pops (conglomerates occs)]
+     (write-str pops)
+   ))

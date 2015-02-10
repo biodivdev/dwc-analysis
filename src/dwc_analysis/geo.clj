@@ -22,6 +22,27 @@
 (def intersects? relation/intersects?)
 (def distance analysis/distance)
 
+(defn round2
+  "Round a double to the given precision (number of significant digits)"
+  [precision d]
+  (let [factor (Math/pow 10 precision)]
+        (/ (Math/round (* d factor)) factor)))
+
+(defn point?
+  [occ] 
+   (and 
+     (not (nil? occ))
+     (not (nil? (:decimalLatitude occ)))
+     (not (nil? (:decimalLongitude occ)))
+     (number? (:decimalLatitude occ))
+     (number? (:decimalLongitude occ))
+     (not (= 0 (:decimalLatitude occ)))
+     (not (= 0 (:decimalLongitude occ)))
+     (<= (:decimalLongitude occ) 180)
+     (<= (:decimalLatitude occ) 90)
+     (>= (:decimalLongitude occ) -180)
+     (>= (:decimalLatitude occ) -90)))
+
 (defn to-point
   [p] 
   (point (c (:decimalLongitude p) (:decimalLatitude p))))

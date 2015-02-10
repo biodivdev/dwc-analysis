@@ -3,21 +3,12 @@
   (:require [plumbing.graph :as graph] [schema.core :as s])
   (:use dwc-analysis.geo))
 
-(defn filter-occs
-  [occ] 
-   (and 
-     (not (nil? occ))
-     (not (nil? (:decimalLatitude occ)))
-     (not (nil? (:decimalLongitude occ)))
-     (number? (:decimalLatitude occ))
-     (number? (:decimalLongitude occ))))
-
 (def eoo-1
   (graph/compile
     {:occs
      (fnk [occurrences] 
        (->> occurrences
-         (filter filter-occs)
+         (filter point?)
          (map #(vector (:decimalLongitude %) (:decimalLatitude %))) 
          (distinct)))
      :points 
@@ -34,10 +25,13 @@
         (if (nil? raw-polygon) 0
           (* (area raw-polygon) 10000)))
      :geo 
-      (fnk [raw-polygon area]
+      (fnk [raw-polygon area ]
+         (if (nil? raw-polygon) nil 
          {:type "Feature"
           :properties {:area area}
-          :geometry (as-geojson raw-polygon)})
+          :geometry (as-geojson raw-polygon)}
+         )
+           )
     }
   )
 )

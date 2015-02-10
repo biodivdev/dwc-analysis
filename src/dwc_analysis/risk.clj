@@ -20,18 +20,21 @@
 
 (defn eoo
   [value] 
-  (if (< value 100)
-    {:category "CR" :criteria "B1" 
-     }
-    (if (< value 5000)
-      {:category "EN" :criteria "B1"
+  (if (= value 0)
+    {:category "D" :criteria ""}
+    (if (< value 100)
+      {:category "CR" :criteria "B1" 
        }
-      (if (< value 20000)
-        {:category "VU" :criteria "B1"
+      (if (< value 5000)
+        {:category "EN" :criteria "B1"
          }
-        (if (< value 50000)
-          {:category "NT" :criteria ""}
-          {:category "LC" :criteria ""}
+        (if (< value 20000)
+          {:category "VU" :criteria "B1"
+           }
+          (if (< value 50000)
+            {:category "NT" :criteria ""}
+            {:category "LC" :criteria ""}
+            )
           )
         )
       )
@@ -40,15 +43,18 @@
 
 (defn aoo
   [value] 
-  (if (< value 10)
-    {:category "CR" :criteria "B2"}
-    (if (< value 500)
-      {:category "EN" :criteria "B2"}
-      (if (< value 2000)
-        {:category "VU" :criteria "B2"}
-        (if (< value 5000)
-          {:category "NT" :criteria ""}
-          {:category "LC" :criteria ""}
+  (if (= value 0)
+    {:category "D" :criteria ""}
+    (if (< value 10)
+      {:category "CR" :criteria "B2"}
+      (if (< value 500)
+        {:category "EN" :criteria "B2"}
+        (if (< value 2000)
+          {:category "VU" :criteria "B2"}
+          (if (< value 5000)
+            {:category "NT" :criteria ""}
+            {:category "LC" :criteria ""}
+            )
           )
         )
       )
