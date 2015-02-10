@@ -2,7 +2,7 @@
   (:require [dwc-analysis.eoo :as eoo])
   (:require [dwc-analysis.aoo :as aoo])
   (:require [dwc-analysis.risk :as risk])
-  (:require [dwc-analysis.conglomerates :as conglomerates])
+  (:require [dwc-analysis.clusters :as clusters])
   (:use plumbing.core)
   (:use dwc-analysis.geo)
   (:require [plumbing.graph :as graph] [schema.core :as s]))
@@ -65,13 +65,13 @@
             :historic (aoo/aoo (:historic points) cell_size)
             :recent   (aoo/aoo (:recent points) cell_size)}
           ))
-    :conglomerates 
+    :clusters 
       (fnk [points]
-           {:all      (conglomerates/conglomerates (:all points))
-            :historic (conglomerates/conglomerates (:historic points))
-            :recent   (conglomerates/conglomerates (:recent points))})
+           {:all      (clusters/clusters (:all points))
+            :historic (clusters/clusters (:historic points))
+            :recent   (clusters/clusters (:recent points))})
     :risk-assessment 
-      (fnk [points aoo eoo conglomerates]
+      (fnk [points aoo eoo clusters]
          (risk/assess {:occurrence_count (count (:all points))
                        :aoo (:area (:all aoo)) 
                        :eoo (:area (:all eoo))

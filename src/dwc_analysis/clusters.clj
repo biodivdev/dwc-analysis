@@ -1,10 +1,10 @@
-(ns dwc-analysis.conglomerates
+(ns dwc-analysis.clusters
   (:use dwc-analysis.geo)
   (:use plumbing.core)
   (:require [cljts.geom :as g])
   (:require [plumbing.graph :as graph] [schema.core :as s]))
 
-(def conglomerates-0
+(def clusters-0
   (graph/compile
     {:points
       (fnk [occurrences] 
@@ -27,7 +27,7 @@
          (->> buffers-raw
            (mapv #(hash-map :type "Feature" :properties {:area (/ (area-in-meters %) 1000)} :geometry (as-geojson % )))
            (hash-map :type "FeatureCollection" :features)))
-     :conglomerates
+     :clusters
       (fnk [buffers-raw] 
         (let [all (union buffers-raw)
               n   (.getNumGeometries all)]
@@ -36,22 +36,22 @@
              (for [i (range 0 n)]
                (.getGeometryN all i))))))
      :geo 
-     (fnk [conglomerates] 
-           (->> conglomerates
+     (fnk [clusters] 
+           (->> clusters
              (mapv #(hash-map :type "Feature" :properties {:area (/ (area-in-meters %) 1000)} :geometry (as-geojson % )))
              (hash-map :type "FeatureCollection" :features)))
      :count
       (fnk [geo]
         (count (:features geo)))
      :area 
-      (fnk [conglomerates]
-        (/ (apply + 0 (map area-in-meters conglomerates)) 1000))
+      (fnk [clusters]
+        (/ (apply + 0 (map area-in-meters clusters)) 1000))
      }))
 
-(defn conglomerates
+(defn clusters
   ""
   [occs] (if (empty? (filter point? occs))
-          {:max-distance 0 :conglomerates [] :area 0 :geo {:type "FeatureCollection" :features []} :count 0}
-          (-> (conglomerates-0 {:occurrences occs}) 
-              (dissoc :conglomerates :buffers-raw :points :occurrences :occs))))
+          {:max-distance 0 :clusters [] :area 0 :geo {:type "FeatureCollection" :features []} :count 0}
+          (-> (clusters-0 {:occurrences occs}) 
+              (dissoc :clusters :buffers-raw :points :occurrences :occs))))
 

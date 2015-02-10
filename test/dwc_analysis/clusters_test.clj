@@ -1,7 +1,7 @@
-(ns dwc-analysis.conglomerates-test
+(ns dwc-analysis.clusters-test
   (:use [clojure.data.json :only [read-str write-str]])
   (:use dwc-analysis.geo)
-  (:use dwc-analysis.conglomerates)
+  (:use dwc-analysis.clusters)
   (:use midje.sweet))
 
 (defn resource
@@ -13,42 +13,42 @@
             occ1 {:decimalLatitude 12.12 :decimalLongitude 22.22}
             occ2 {:decimalLatitude 10.12 :decimalLongitude 20.22}
             occ3 {:decimalLatitude 10.122 :decimalLongitude 20.222}]
-  (:max-distance (conglomerates [])) => 0
-  (:max-distance (conglomerates [occ0 occ1] )) => (roughly 313.93)
-  (:max-distance (conglomerates [occ0 occ1 occ2] )) => (roughly 313.93)))
+  (:max-distance (clusters [])) => 0
+  (:max-distance (clusters [occ0 occ1] )) => (roughly 313.93)
+  (:max-distance (clusters [occ0 occ1 occ2] )) => (roughly 313.93)))
 
 (fact "Lets do this!"
       (let [occ0 {:decimalLatitude 10.10 :decimalLongitude 20.20}
             occ1 {:decimalLatitude 12.12 :decimalLongitude 22.22}
             occ2 {:decimalLatitude 10.12 :decimalLongitude 20.22}
             occ3 {:decimalLatitude 10.12 :decimalLongitude 20.22}]
-  (count (:features (:geo (conglomerates []))) ) => 0
-  (int (:area (conglomerates []))) => 0
-  (count (:features (:geo (conglomerates [occ0])))  )=> 1
-  (int (:area (conglomerates [occ0]))) => 0
-  (count (:features (:geo (conglomerates [occ0 occ1]))) ) => 2
-  (int (:area (conglomerates [occ0 occ1]))) => 6152525
-  (count (:features (:geo (conglomerates [occ0 occ1 occ2]))) ) => 2
-  (count (:features (:geo (conglomerates [occ0 occ1 occ2 occ3])) )) => 2
+  (count (:features (:geo (clusters []))) ) => 0
+  (int (:area (clusters []))) => 0
+  (count (:features (:geo (clusters [occ0])))  )=> 1
+  (int (:area (clusters [occ0]))) => 0
+  (count (:features (:geo (clusters [occ0 occ1]))) ) => 2
+  (int (:area (clusters [occ0 occ1]))) => 6152525
+  (count (:features (:geo (clusters [occ0 occ1 occ2]))) ) => 2
+  (count (:features (:geo (clusters [occ0 occ1 occ2 occ3])) )) => 2
 ))
 
 (fact "Some bad input"
-  (:area (conglomerates [])) => 0
-  (:area (conglomerates [nil])) => 0
-  (:area (conglomerates [{}])) => 0
-  (:area (conglomerates nil)) => 0
-  (:conglomerates (conglomerates [])) => [])
+  (:area (clusters [])) => 0
+  (:area (clusters [nil])) => 0
+  (:area (clusters [{}])) => 0
+  (:area (clusters nil)) => 0
+  (:clusters (clusters [])) => [])
 
 (fact "Do not return strange stuff"
-  (let [pops (conglomerates [{:decimalLatitude 10.10 :decimalLongitude 20.20}])]
+  (let [pops (clusters [{:decimalLatitude 10.10 :decimalLongitude 20.20}])]
     (write-str pops)
     ))
 
 (fact "Close occurrences"
    (let [occs (resource "occs.json")
          occs1 (resource "occs1.json")
-         pops (conglomerates occs)
-         pops1 (conglomerates occs1)]
+         pops (clusters occs)
+         pops1 (clusters occs1)]
      (:buffers pops) => (resource "occs.buffers.geojson")
      (:geo pops) => (resource "occs.pops.geojson")
      (:buffers pops1) => (resource "occs1.buffers.geojson")
@@ -57,7 +57,7 @@
 
 (fact "Vicia faba"
    (let [occs (resource "Vicia_faba.json")
-         pops (conglomerates occs)]
+         pops (clusters occs)]
      (:buffers pops) => (resource "Vicia_faba.buffers.geojson")
      (:geo pops) => (resource "Vicia_faba.pops.geojson")
      (:count pops) => 7
@@ -65,6 +65,6 @@
 
   (fact "Vicia faba 2"
    (let [occs (resource "Vplus.json")
-         pops (conglomerates occs)]
+         pops (clusters occs)]
      (write-str pops)
    ))
