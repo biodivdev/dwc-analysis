@@ -6,12 +6,18 @@ Best used with [dwc](http://github.com/diogok/dwc) lib.
 
 ## Usage
 
+Using leningen:
+
+    [dwc-analysis "0.0.12"]
+
 All functions expect and vector of hash-maps that represent the occurrences, such as:
 
   [
     {:occurrenceID "foo1" :decimalLatitude 10.10 :decimalLongitude 20.20}
     {:occurrenceID "foo2" :decimalLatitude 10.12 :decimalLongitude 20.24}
   ]
+
+And must of them return GeoJSON conforming objects on the "geo" propertie, ready to put on a map.
 
 ### AOO
 
@@ -22,10 +28,17 @@ Calculates area of occupancy (in kilometers) using a grid-size (default to 2 kil
   (aoo occurrences) 
   (aoo occurrences 10) (comment "grid-size of 10km")
   => {:area 100000
-      :grid [
-        {:type "Polygon" :coordinates [] :count 1}
-        {:type "Polygon" :coordinates [] :count 2}
-      ]
+      :geo {
+        :type "FeatureCollection",
+        :features [
+          {:type "Feature",
+           :geometry {
+             :type "Polygon",
+             :coordinates [[ ... ]]
+           }
+          }
+        ]
+      }
      }
 
 ### EOO
@@ -36,10 +49,56 @@ Calculates the extent of occurrencce and returns the mininum convex polygon and 
    
   (eoo occurrences)
   => {:area 100000
-      :polygon {:type "Polygon" :coordinates []}}
+      :geo {
+        :type "FeatureCollection",
+        :features [
+          {:type "Feature",
+           :geometry {
+             :type "Polygon",
+             :coordinates [[ ... ]]
+           }
+          }
+        ]
+      }
+    } 
 
-### Populations
+### Clusters 
 
+Performs clustering of occurrences identifing conglomerates by following:
+
+- Identify maximum distance between points
+- Buffer all points with radius as 10% of maximum distance
+- Union all buffers that overlaps
+
+  (use 'dwc-analysis.clusters)
+  (clusters occurrences)
+  => {:count 10
+      :area 10000
+      :buffers {
+        :type "FeatureCollection",
+        :features [
+          {:type "Feature",
+           :geometry {
+             :type "Polygon",
+             :coordinates [[ ... ]]
+           }
+          }
+        ]
+      }
+      :geo {
+        :type "FeatureCollection",
+        :features [
+          {:type "Feature",
+           :geometry {
+             :type "Polygon",
+             :coordinates [[ ... ]]
+           }
+          }
+        ]
+      }
+    }
+
+Note: The radius calculation is to be changed to a mean distance based of a minimum spaning tree.
 
 
 ### Risk Analysis
@@ -84,8 +143,55 @@ Usage:
 
   (require 'dwc-analysis.risk)
 
-  (assess {:aoo 4 :eoo 256 :locations 1})
-    => {}
+  (assess {:aoo 4 :eoo 256 :locations 1 :decline true})
+    => [{ :category "X" :criteria "Xxn" :reason "Locations" } ... ]
+
+It returns all possible classifications, ordered by bigger risk, all parameters are optional.
+
+### ALL
+
+Perform all analysis, also dividing the occurrences by historic (> 50 years old) and recent.
+
+Usage:
+    
+   (use 'dwc-analysis.all)
+
+   (all-analysis occurrences)
+    => {
+      :occurrences {
+        :all [],
+        :count 10,
+        :recent [],
+        :count_recent 0,
+        :historic [],
+        :count_historic 0
+      }
+      :points {
+        :all [],
+        :count 10,
+        :recent [],
+        :count_recent 0,
+        :historic [],
+        :count_historic 0
+        :geo {:type "FeatureCollection" :features []}
+      },
+      :eoo {
+        :all {},
+        :historic {},
+        :recent {}
+      }
+      :aoo {
+        :all {},
+        :historic {},
+        :recent {}
+      }
+      :clusters {
+        :all {},
+        :historic {},
+        :recent {}
+      }
+      :risk-assessment []
+    }
 
 ## License
 
