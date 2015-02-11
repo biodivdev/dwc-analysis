@@ -27,9 +27,7 @@
         :recent (fnk [all] (filter recent? all))
         :count_recent (fnk [recent] (count recent))
         :historic (fnk [all] (filter historic? all))
-        :count_historic (fnk [historic] (count historic))
-       }
-      )
+        :count_historic (fnk [historic] (count historic))})
     :points
      (graph/compile
        {:all (fnk [occurrences] (filter point? (:all occurrences)))
@@ -42,8 +40,7 @@
                (->> all 
                  (mapv to-point)
                  (mapv #(hash-map :type "Feature" :properties {} :geometry (as-geojson %)))
-                 (hash-map :type "FeatureCollection" :features)))}
-     )
+                 (hash-map :type "FeatureCollection" :features)))})
     :eoo 
       (fnk [points]
            {:all      (eoo/eoo (:all points))
@@ -55,16 +52,6 @@
             :all      (aoo/aoo (:all points))
             :historic (aoo/aoo (:historic points))
             :recent   (aoo/aoo (:recent points))})
-    :aoo2
-      (fnk [points eoo]
-        (let [points-utm   (map to-utm (map to-point (:all points)))
-              max-distance (apply max 1 (flatten (for [p0 points-utm] (for [p1 points-utm] (distance p0 p1)))))
-              cell_size  (/ (* max-distance 0.1) 1000)]
-           {:cell_size  cell_size
-            :all      (aoo/aoo (:all points) cell_size)
-            :historic (aoo/aoo (:historic points) cell_size)
-            :recent   (aoo/aoo (:recent points) cell_size)}
-          ))
     :clusters 
       (fnk [points]
            {:all      (clusters/clusters (:all points))
@@ -76,12 +63,13 @@
                        :aoo (:area (:all aoo)) 
                        :eoo (:area (:all eoo))
                        :decline (or (> (:area (:historic aoo)) (:area (:recent aoo)))
-                                    (> (:area (:historic eoo)) (:area (:recent eoo))))})
-         )
+                                    (> (:area (:historic eoo)) (:area (:recent eoo))))}))
     }
   )
 )
 
 (defn all-analysis
   [occurrences]
-   (all {:data occurrences}))
+   (-> (all {:data occurrences})
+       (dissoc :data)))
+
