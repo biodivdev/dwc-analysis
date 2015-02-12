@@ -10,12 +10,17 @@
 (defn occ?
   [occ] (not (nil? occ)))
 
+(defn now
+  [] (java.util.Calendar/getInstance))
+
+(defn year
+  [] (.get (now) java.util.Calendar/YEAR ))
 
 (defn recent?
-  [occ] (or (= (:year occ) nil) (not (number? (:year occ))) (>= (:year occ) (- 2015 100))))
+  [occ] (or (= (:year occ) nil) (not (number? (:year occ))) (>= (:year occ) (- 2015 50))))
 
 (defn historic?
-  [occ] (and (not (nil? (:year occ))) (number? (:year occ)) (< (:year occ) (- 2015 100))))
+  [occ] (and (not (nil? (:year occ))) (number? (:year occ)) (< (:year occ) (- 2015 50))))
 
 (def all
  (graph/compile
