@@ -7,7 +7,6 @@
   [file]
    (read-str (slurp (clojure.java.io/resource file)) :key-fn keyword))
 
-
 (fact "Can make ALL analysis (simple)"
  (let [result (all-analysis [{:decimalLatitude 10.10 :decimalLongitude 20.20 :year 2000} {:year 1900} {}])]
    (:occurrences result)
@@ -28,6 +27,10 @@
     => (contains { :count 0 } )
  )
 )
+
+(fact "Work fine with big number. Limit aoo calcs (maybe?)"
+      (println "test" )
+  (get-in (all-analysis (map #(hash-map :decimalLatitude (/ % 100) :decimalLongitude (/ % 100)) (range 0 9000))) [:aoo :all :area]) => 2000)
 
 (fact "Return only nice things"
   (write-str (all-analysis (resource "occs.json"))))

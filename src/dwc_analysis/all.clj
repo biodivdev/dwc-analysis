@@ -14,13 +14,13 @@
   [] (java.util.Calendar/getInstance))
 
 (defn year
-  [] (.get (now) java.util.Calendar/YEAR ))
+  [] (.get (now) java.util.Calendar/YEAR))
 
 (defn recent?
-  [occ] (or (= (:year occ) nil) (not (number? (:year occ))) (>= (:year occ) (- 2015 50))))
+  [occ] (or (= (:year occ) nil) (not (number? (:year occ))) (>= (:year occ) (- (year) 50))))
 
 (defn historic?
-  [occ] (and (not (nil? (:year occ))) (number? (:year occ)) (< (:year occ) (- 2015 50))))
+  [occ] (and (not (nil? (:year occ))) (number? (:year occ)) (< (:year occ) (- (year) 50))))
 
 (def all
  (graph/compile
@@ -75,6 +75,7 @@
 
 (defn all-analysis
   [occurrences]
-   (-> (all {:data occurrences})
-       (dissoc :data)))
+   (-> (all {:data (take 1000 occurrences)})
+       (dissoc :data)
+       (assoc :limited (> (count occurrences) 500) :limit 1000)))
 
