@@ -25,9 +25,10 @@
 (def all
  (graph/compile
    {
+    :limited (fnk [data limit] (and (> limit 0) (< limit (count data))))
     :occurrences 
      (graph/compile 
-       {:all (fnk [data] (filter occ? data))
+       {:all (fnk [data limited limit] (filter occ? data))
         :count (fnk [all] (count all))
         :recent (fnk [all] (filter recent? all))
         :count_recent (fnk [recent] (count recent))
@@ -46,22 +47,27 @@
                  (mapv to-point)
                  (mapv #(hash-map :type "Feature" :properties {} :geometry (as-geojson %)))
                  (hash-map :type "FeatureCollection" :features)))})
+    :points-cut 
+     (fnk [points limited limit]
+          {:all  (if limited (take limit (:all points)) (:all points))
+           :historic  (if limited (take limit (:historic points)) (:historic points))
+           :recent  (if limited (take limit (:recent points)) (:recent points))})
     :eoo 
-      (fnk [points]
-           {:all      (eoo/eoo (:all points))
-            :historic (eoo/eoo (:historic points))
-            :recent   (eoo/eoo (:recent points))})
+      (fnk [points-cut]
+           {:all      (eoo/eoo (:all points-cut))
+            :historic (eoo/eoo (:historic points-cut))
+            :recent   (eoo/eoo (:recent points-cut))})
     :aoo 
-      (fnk [points]
+      (fnk [points-cut]
            {:cell_size 2
-            :all      (aoo/aoo (:all points))
-            :historic (aoo/aoo (:historic points))
-            :recent   (aoo/aoo (:recent points))})
+            :all      (aoo/aoo (:all points-cut))
+            :historic (aoo/aoo (:historic points-cut))
+            :recent   (aoo/aoo (:recent points-cut))})
     :clusters 
-      (fnk [points]
-           {:all      (clusters/clusters (:all points))
-            :historic (clusters/clusters (:historic points))
-            :recent   (clusters/clusters (:recent points))})
+      (fnk [points-cut]
+           {:all      (clusters/clusters (:all points-cut))
+            :historic (clusters/clusters (:historic points-cut))
+            :recent   (clusters/clusters (:recent points-cut))})
     :risk-assessment 
       (fnk [points aoo eoo clusters]
          (risk/assess {:occurrence_count (count (:all points))
@@ -75,7 +81,8 @@
 
 (defn all-analysis
   [occurrences]
-   (-> (all {:data (take 1000 occurrences)})
-       (dissoc :data)
-       (assoc :limited (> (count occurrences) 500) :limit 1000)))
+   (-> (all {:data occurrences :limit 1000})
+       (dissoc :data :points-cut)
+       (assoc  :limit 1000)
+       ))
 

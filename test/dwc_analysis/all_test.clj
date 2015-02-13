@@ -29,8 +29,9 @@
 )
 
 (fact "Work fine with big number. Limit aoo calcs (maybe?)"
-      (println "test" )
-  (get-in (all-analysis (map #(hash-map :decimalLatitude (/ % 100) :decimalLongitude (/ % 100)) (range 0 9000))) [:aoo :all :area]) => 2000)
+  (all-analysis (map #(hash-map :decimalLatitude (/ % 100) :decimalLongitude (/ % 100)) (range 0 9))) => (contains {:limited false :limit 1000})
+  (all-analysis (map #(hash-map :decimalLatitude (/ % 100) :decimalLongitude (/ % 100)) (range 0 9000))) => (contains {:limited true :limit 1000})
+      )
 
 (fact "Return only nice things"
   (write-str (all-analysis (resource "occs.json"))))
