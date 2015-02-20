@@ -171,6 +171,12 @@ Usage:
 
    (all-analysis occurrences)
     => {
+      :quality {
+        :abundance 0.0
+        :identification 0.0
+        :georeference 0.0
+        :linage 0.0
+      },
       :occurrences {
         :all [],
         :count 10,
