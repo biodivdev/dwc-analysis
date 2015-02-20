@@ -21,7 +21,7 @@
 (defn eoo
   [value] 
   (if (= value 0)
-    {:category "D" :criteria ""}
+    {:category "DD" :criteria ""}
     (if (< value 100)
       {:category "CR" :criteria "B1"}
       (if (< value 5000)
