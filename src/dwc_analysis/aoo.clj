@@ -72,11 +72,16 @@
  (graph/compile
   {:points
      (fnk [occurrences] (occs-to-points occurrences))
-   :big-grid 
+   :bigger-grid 
      (fnk [points step]
        (->> points
          (partition-all 100)
-         (pmap #(cluster-points (make-grid (* step 10) %) %))
+         (pmap #(cluster-points (make-grid (* step 100) %) %))
+         (reduce merge)))
+   :big-grid 
+     (fnk [bigger-grid step]
+       (->> bigger-grid 
+         (pmap #(cluster-points (make-grid (* step 10) (key %)) (val %)))
          (reduce merge)))
    :grid 
      (fnk [big-grid step]
@@ -119,6 +124,6 @@
   ([occs] (aoo occs 2))
   ([occs step] 
    (-> (aoo-1 {:occurrences occs :step step })
-       (dissoc :small-grid :big-grid :points :occurrences)))
+       (dissoc :small-grid :bigger-grid :big-grid :points :occurrences)))
    )
 
