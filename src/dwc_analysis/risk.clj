@@ -23,14 +23,11 @@
   (if (= value 0)
     {:category "D" :criteria ""}
     (if (< value 100)
-      {:category "CR" :criteria "B1" 
-       }
+      {:category "CR" :criteria "B1"}
       (if (< value 5000)
-        {:category "EN" :criteria "B1"
-         }
+        {:category "EN" :criteria "B1"}
         (if (< value 20000)
-          {:category "VU" :criteria "B1"
-           }
+          {:category "VU" :criteria "B1"}
           (if (< value 50000)
             {:category "NT" :criteria ""}
             {:category "LC" :criteria ""}
@@ -44,7 +41,7 @@
 (defn aoo
   [value] 
   (if (= value 0)
-    {:category "D" :criteria ""}
+    {:category "DD" :criteria ""}
     (if (< value 10)
       {:category "CR" :criteria "B2"}
       (if (< value 500)
@@ -64,12 +61,12 @@
 (defn locations
   [value] 
   (if (= value 1)
-    {:category "CR"}
+    {:category "CR" :criteria ""}
     (if (<= value 5)
-      {:category "EN"}
+      {:category "EN" :criteria ""}
       (if (<= value 10)
-        {:category "VU"}
-        {:category ""}
+        {:category "VU" :criteria ""}
+        {:category "" :criteria ""}
         )
       )
     )

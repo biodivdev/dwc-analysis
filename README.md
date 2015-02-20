@@ -116,7 +116,9 @@ A simplistic quality analysis based on completeness.
 
 ### Risk Analysis
 
-Perform an automated risk analysis based on IUCN methodology, applying only geospatial distribution data:
+_I don't feel confident about this yet_
+
+Perform an automated risk analysis loosily based on IUCN methodology, applying only geospatial distribution data:
 
 Categories:
 
@@ -130,7 +132,7 @@ Categories:
 - EW
 - EX
 
-From the IUCN Red List Categories and Criteria:
+Adapted from the IUCN Red List Categories and Criteria:
 
 Criteria B 
 - B1 (EOO)
@@ -141,13 +143,16 @@ Criteria B
 -- AOO < 10km² = CR
 -- AOO < 500km² = EN
 -- AOO < 2000km² = VU
+
+The below information SHOULD apply, but I don't have an algorithm to calculate this values, so for the evaluation to happen we allow it to happen without them.'
+
 - Must also:
 -- Locations = 1 for CR
 -- Locations <= 5 for EN
 -- Locations <= 10 for VU
--- AND one of (but we cant assess that due to lack of data)
---- decline of population, eoo or aoo
---- extreme fluctuation of population, eoo or aoo
+- AND one of 
+-- decline of population, eoo or aoo
+-- extreme fluctuation of population, eoo or aoo
 
 VU D2
 - (AOO < 20km² OR Locations <= 5) AND a threat (but we cant assess threats yet).
