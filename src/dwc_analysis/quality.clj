@@ -36,7 +36,7 @@
 
 (defn abundance
   [occs] 
-  (min 5 (count occs)))
+  (min 5 (int (Math/ceil (/ (count occs) 2))) ))
 
 (defn linage
   [occ] 

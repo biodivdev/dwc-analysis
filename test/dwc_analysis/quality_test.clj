@@ -42,8 +42,9 @@
 
 (fact "Abundance"
   (abundance []) => 0
-  (abundance [{} {} {}]) => 3
-  (abundance [{} {} {} {} {} {} {} {}]) => 5
+  (abundance [{} {} {}]) => 2
+  (abundance [{} {} {} {} {} {} {} {}]) => 4
+  (abundance [{} {} {} {} {} {} {} {} {} {} {} {} {}]) => 5
       )
 
 (fact "Linage"
@@ -68,7 +69,7 @@
   (analyse [{:occurrenceID "10"} {:occurrenceID "11" :family "Acanthaceae" :scientificName "Teste test" :decimalLatitude 10.10 :decimalLongitude 20.20} ])
      => (contains {:identification 1.5 :georeference 0.5})
   (analyse [{:occurrenceID "10"} {:occurrenceID "11" :family "Acanthaceae" :scientificName "Teste test" :decimalLatitude 10.10 :decimalLongitude 20.20 :year 2015}  {:year 1950 :locality "Riverrun"}])
-     => (contains {:identification 1.0 :linage 2.0 :abundance 3.0})
+     => (contains {:identification 1.0 :linage 2.0 :abundance 2.0})
   (analyse []) => {:identification 0.0 :linage 0.0 :abundance 0.0 :georeference 0.0}
   (analyse [nil]) => {:identification 0.0 :linage 0.0 :abundance 0.0 :georeference 0.0}
   (analyse [nil {}]) => {:identification 0.0 :linage 0.0 :abundance 0.0 :georeference 0.0}
