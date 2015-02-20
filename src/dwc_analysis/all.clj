@@ -85,6 +85,6 @@
   [occurrences]
    (-> (all {:data occurrences :limit 10000})
        (dissoc :data :points-cut)
-       (assoc  :limit 1000)
+       (assoc  :limit 10000)
        ))
 

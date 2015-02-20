@@ -75,7 +75,15 @@
   ""
   [points] 
    (analysis/convex-hull 
-     (reduce analysis/union points)))
+     (reduce analysis/union
+       (pmap
+         (fn [points] (reduce analysis/union points))
+         (partition-all 1000 points)))))
+
+(defn get-points
+  ""
+  [feature]
+  (map point (.getCoordinates feature)))
 
 (defn buffer-in-meters
   ""
@@ -89,7 +97,10 @@
 (defn union
   ""
   [ features ]
-   (reduce analysis/union features))
+  (reduce analysis/union
+    (pmap 
+      (fn [features] (reduce analysis/union features))
+      (partition-all 1000 features))))
 
 (defn as-geojson
   ""

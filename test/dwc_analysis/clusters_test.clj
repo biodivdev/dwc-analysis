@@ -58,9 +58,11 @@
 (fact "Vicia faba"
    (let [occs (resource "Vicia_faba.json")
          pops (clusters occs)]
+     (spit "resources/Vicia_faba.buffers.geojson" (write-str (:buffers pops)))
+     (spit "resources/Vicia_faba.pops.geojson" (write-str (:geo pops)))
      (:buffers pops) => (resource "Vicia_faba.buffers.geojson")
      (:geo pops) => (resource "Vicia_faba.pops.geojson")
-     (:count pops) => 7
+     (:count pops) => 8
    ))
 
 (fact "Vicia faba 2"
@@ -68,3 +70,6 @@
        pops (clusters occs)]
    (write-str pops)
  ))
+
+(fact "Growing"
+  (clusters (map #(hash-map :decimalLatitude (/ % 100) :decimalLongitude (/ % 100)) (range -5000 5001))))
