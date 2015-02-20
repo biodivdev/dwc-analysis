@@ -18,7 +18,9 @@
       (fnk [points]
         (if (empty? points) nil
           (if (>= (count points) 3)
-            (convex-hull points)
+            (convex-hull
+             (pmap convex-hull 
+              (partition-all 500 points))) 
             (union (map #(buffer-in-meters % 10000) points)))))
      :area 
       (fnk [raw-polygon]
@@ -29,15 +31,14 @@
          (if (nil? raw-polygon) nil 
          {:type "Feature"
           :properties {:area area}
-          :geometry (as-geojson raw-polygon)}
-         )
-           )
+          :geometry (as-geojson raw-polygon)}))
     }
   )
 )
  
 (defn eoo
   ""
-  [occs] (-> (eoo-1 {:occurrences occs})
+  [occs]
+  (-> (eoo-1 {:occurrences occs})
              (dissoc :points :raw-polygon :occs :occurrences)) )
 

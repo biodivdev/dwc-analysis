@@ -33,8 +33,7 @@
 
 (fact "Is distinct working"
   (int (:area (eoo (read-str (slurp (clojure.java.io/resource "Grazielanthus_arkeocarpus.json")) :key-fn keyword))))
-    => (roughly 273)
-      )
+    => (roughly 273))
 
 (fact "Return only nice things"
   (write-str (eoo [{:decimalLatitude 10.10 :decimalLongitude 20.20}])))
@@ -42,5 +41,9 @@
 (fact "Bad input"
  (eoo nil) => (contains {:area 0} )
  (eoo []) => (contains {:area 0 } )
- (eoo [nil {}]) => (contains {:area 0})
-)
+ (eoo [nil {}]) => (contains {:area 0}))
+
+(fact "Going big"
+  (int (:area (eoo (reduce concat (mapv  #(read-str ( slurp (clojure.java.io/resource %) ) :key-fn keyword )  ["occs.json" "Vicia_faba.json" "Vplus.json" "occs1.json" "Grazielanthus_arkeocarpus.json"]) ))))
+    => 205166202)
+
