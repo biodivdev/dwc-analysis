@@ -15,8 +15,7 @@
           (map #(point (c (first %)  (second %) )))))
      :max-distance-meters
       (fnk [points]
-        (let [
-              points-utm (doall (map to-utm points)) 
+        (let [points-utm (doall (map to-utm points)) 
               distances (for [p0 points-utm p1 points-utm] (distance p0 p1)) ]
           (min 5000000 (reduce max 1 distances))))
      :max-distance 
