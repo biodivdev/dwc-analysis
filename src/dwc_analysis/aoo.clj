@@ -75,13 +75,13 @@
    :big-grid 
      (fnk [points step]
        (->> points
-         (partition-all 10)
+         (partition-all 100)
          (pmap #(cluster-points (make-grid (* step 10) %) %))
          (reduce merge)))
    :grid 
      (fnk [big-grid step]
        (->> big-grid
-         (map #(cluster-points (make-grid step (key %)) (val %)))
+         (pmap #(cluster-points (make-grid step (key %)) (val %)))
          (reduce concat)))
    :area 
     (fnk [grid step]
