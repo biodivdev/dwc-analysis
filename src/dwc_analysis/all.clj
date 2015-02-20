@@ -3,6 +3,7 @@
   (:require [dwc-analysis.aoo :as aoo])
   (:require [dwc-analysis.risk :as risk])
   (:require [dwc-analysis.clusters :as clusters])
+  (:require [dwc-analysis.quality :as quality])
   (:use plumbing.core)
   (:use dwc-analysis.geo)
   (:require [plumbing.graph :as graph] [schema.core :as s]))
@@ -26,6 +27,7 @@
  (graph/compile
    {
     :limited (fnk [data limit] (and (> limit 0) (< limit (count data))))
+    :quality (fnk [data] (quality/analyse data))
     :occurrences 
      (graph/compile 
        {:all (fnk [data limited limit] (filter occ? data))

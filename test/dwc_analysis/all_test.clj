@@ -25,6 +25,8 @@
     => (contains { :count 1 } )
    (:historic (:clusters result))
     => (contains { :count 0 } )
+   (:quality result)
+    => (contains {:abundance 2.0})
  )
 )
 
@@ -41,3 +43,4 @@
  (all-analysis []) 
  (all-analysis [nil {}]) 
 )
+

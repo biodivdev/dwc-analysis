@@ -8,7 +8,7 @@ Best used with [dwc](http://github.com/diogok/dwc) lib.
 
 Using leningen:
 
-    [dwc-analysis "0.0.14"]
+    [dwc-analysis "0.0.15"]
 
 All functions expect and vector of hash-maps that represent the occurrences, such as:
 
@@ -99,6 +99,19 @@ Performs clustering of occurrences identifing conglomerates by following:
     }
 
 Note: The radius calculation is to be changed to a mean distance based of a minimum spaning tree.
+
+### Quality Analysis
+
+A simplistic quality analysis based on completeness.
+
+- Identification: id(occurrenceID), collector(recordedBy and recordNumber), date (day, month and year), identification(identifiedBy) and taxonomy (family and (scientificName or genus+specificEpithet))
+- Georeference: valida decimalLatitude/decimalLongitude, locality, country/state/municipality, precision and datum
+- Abundance: number of records
+- Linage: age/currency of record
+
+  (use 'dwc-analysis.qyality)
+  (analyse occurrences)
+  => {:abundance 2.0 :identification 1.0 :georeference 4.5 :linage 3.5}
 
 
 ### Risk Analysis
