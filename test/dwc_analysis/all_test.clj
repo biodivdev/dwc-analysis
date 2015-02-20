@@ -30,6 +30,10 @@
  )
 )
 
+(fact "A filter"
+  (:points (all-analysis [{:decimalLatitude 0.0 :decimalLongitude 0.0} {:decimalLatitude 0 :decimalLongitude 0} {}]))
+      => (contains {:count 0 :count_historic 0 :count_recent 0}))
+
 (fact "Work fine with big number. Limit aoo calcs (maybe?)"
   (all-analysis (map #(hash-map :decimalLatitude (/ % 100) :decimalLongitude (/ % 100)) (range 0 9))) => (contains {:limited false :limit 1000})
   (all-analysis (map #(hash-map :decimalLatitude (/ % 100) :decimalLongitude (/ % 100)) (range 0 9000))) => (contains {:limited true :limit 1000})

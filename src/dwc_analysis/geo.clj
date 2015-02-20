@@ -32,12 +32,16 @@
   [occ] 
    (and 
      (not (nil? occ))
+     (not (empty? occ))
      (not (nil? (:decimalLatitude occ)))
      (not (nil? (:decimalLongitude occ)))
      (number? (:decimalLatitude occ))
      (number? (:decimalLongitude occ))
      (not (= 0 (:decimalLatitude occ)))
      (not (= 0 (:decimalLongitude occ)))
+     (not (= 0.0 (:decimalLatitude occ)))
+     (not (= 0.0 (:decimalLongitude occ)))
+     (<= (:decimalLongitude occ) 180)
      (<= (:decimalLongitude occ) 180)
      (<= (:decimalLatitude occ) 90)
      (>= (:decimalLongitude occ) -180)

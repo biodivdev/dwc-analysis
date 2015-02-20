@@ -1,6 +1,11 @@
 (ns dwc-analysis.quality-test
+  (:use [clojure.data.json :only [read-str write-str]])
   (:use dwc-analysis.quality)
   (:use midje.sweet))
+
+(defn resource
+  [file]
+   (read-str (slurp (clojure.java.io/resource file)) :key-fn keyword))
 
 (fact "Identification"
   (identification {}) => 0
@@ -69,4 +74,7 @@
   (analyse [nil {}]) => {:identification 0.0 :linage 0.0 :abundance 0.0 :georeference 0.0}
   (analyse [{}]) => {:identification 0.0 :linage 0.0 :abundance 0.0 :georeference 0.0}
       )
+
+(fact "Real specie: Aphelandra longiflora"
+  (write-str (analyse (resource "aphelandra_longiflora.json")) ))
 

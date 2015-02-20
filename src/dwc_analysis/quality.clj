@@ -25,17 +25,7 @@
 (defn georeference
   [occ]
   (grade occ
-     #(and 
-        (not (nil? (:decimalLatitude %)))
-        (not (nil? (:decimalLongitude %)))
-        (number? (:decimalLatitude %))
-        (number? (:decimalLongitude %))
-        (not (= 0 (:decimalLatitude %)))
-        (not (= 0 (:decimalLongitude %)))
-        (>= (:decimalLatitude %) -90)
-        (<= (:decimalLatitude %) 90)
-        (>= (:decimalLongitude %) -180)
-        (<= (:decimalLongitude %) 180))
+     point?
     #(or (not (nil? (:coordinatePrecision %))) (not (nil? (:coordinateUncertaintyInMeters %))))
     #(not (nil? (:geodeticDatum %)))
     #(not (nil? (:locality %)))
