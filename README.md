@@ -8,7 +8,7 @@ Best used with [dwc](http://github.com/diogok/dwc) lib.
 
 Using leningen:
 
-    [dwc-analysis "0.0.21"]
+    [dwc-analysis "0.0.22"]
 
 All functions expect and vector of hash-maps that represent the occurrences, such as:
 
@@ -183,7 +183,6 @@ Usage:
         :linage 0.0
       },
       :occurrences {
-        :all [],
         :count 10,
         :recent [],
         :count_recent 0,
@@ -191,7 +190,6 @@ Usage:
         :count_historic 0
       }
       :points {
-        :all [],
         :count 10,
         :recent [],
         :count_recent 0,

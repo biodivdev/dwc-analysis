@@ -10,11 +10,11 @@
 (fact "Can make ALL analysis (simple)"
  (let [result (all-analysis [{:decimalLatitude 10.10 :decimalLongitude 20.20 :year 2000} {:year 1900} {}])]
    (:occurrences result)
-    => (contains { :count 3 :count_historic 1 :count_recent 2 } )
+    => (contains { :count 3 :count_historic 1 :count_recent 2 })
    (:points result)
-    => (contains { :count 1 :count_historic 0 :count_recent 1 } )
+    => (contains { :count 1 :count_historic 0 :count_recent 1 })
    (:area (:recent (:eoo result)))
-    => (roughly 257.63 ) 
+    => (roughly 257.63) 
    (:historic (:eoo result))
     => (contains { :area 0 } )
    (:recent (:aoo result))
@@ -34,7 +34,7 @@
   (:points (all-analysis [{:decimalLatitude 0.0 :decimalLongitude 0.0} {:decimalLatitude 0 :decimalLongitude 0} {}]))
       => (contains {:count 0 :count_historic 0 :count_recent 0}))
 
-(fact "Work fine with big number. Limit calcs."
+#_(fact "Work fine with big number. Limit calcs."
   (let [a (all-analysis (map #(hash-map :decimalLatitude (/ % 100) :decimalLongitude (/ % 100)) (range 0 9)))]
     (:limited a) => false
     (:limit a) => 10000)

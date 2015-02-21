@@ -28,21 +28,30 @@
    {
     :limited (fnk [data limit] (and (> limit 0) (< limit (count data))))
     :quality (fnk [data] (quality/analyse data))
+    :occs-hash 
+     (fnk [data]
+       (reduce 
+        (fn [occs occ] (assoc occs (:occurrenceID occ) occ)) {}
+        (map
+          (fn [occ] 
+            (if (not (nil? (:occurrenceID occ))) occ 
+              (assoc occ :occurrenceID (str (java.util.UUID/randomUUID) ))))
+        (filter occ? data))))
     :occurrences 
      (graph/compile 
-       {:all (fnk [data limited limit] (filter occ? data))
+       {:all (fnk [occs-hash limited limit] (map val occs-hash))
         :count (fnk [all] (count all))
-        :recent (fnk [all] (filter recent? all))
+        :recent (fnk [all] (map :occurrenceID (filter recent? all)))
         :count_recent (fnk [recent] (count recent))
-        :historic (fnk [all] (filter historic? all))
+        :historic (fnk [all] (map :occurrecneID (filter historic? all)))
         :count_historic (fnk [historic] (count historic))})
     :points
      (graph/compile
        {:all (fnk [occurrences] (filter point? (:all occurrences)))
         :count (fnk [all] (count all))
-        :recent (fnk [all] (filter recent? all))
+        :recent (fnk [all] (map :occurrenceID (filter recent? all)))
         :count_recent (fnk [recent] (count recent))
-        :historic (fnk [all] (filter historic? all))
+        :historic (fnk [all] (map :occurrenceID (filter historic? all)))
         :count_historic (fnk [historic] (count historic))
         :geo (fnk [all] 
                (->> all 
@@ -50,10 +59,18 @@
                  (mapv #(hash-map :type "Feature" :properties {} :geometry (as-geojson %)))
                  (hash-map :type "FeatureCollection" :features)))})
     :points-cut 
-     (fnk [points limited limit]
-          {:all  (if limited (take limit (:all points)) (:all points))
-           :historic  (if limited (take limit (:historic points)) (:historic points))
-           :recent  (if limited (take limit (:recent points)) (:recent points))})
+     (fnk [occs-hash points limited limit]
+        (reduce merge
+          (map
+            (fn [tag]
+              {tag
+                (map
+                  (fn [id]
+                    (get occs-hash (or (:occurrenceID id) id)))
+                  (if limited
+                    (take limit (tag points))
+                    (tag points)))})
+            [:all :historic :recent])))
     :eoo 
       (fnk [points-cut]
            {:all      (eoo/eoo (:all points-cut))
@@ -84,7 +101,9 @@
 (defn all-analysis
   [occurrences]
    (-> (all {:data occurrences :limit 10000})
-       (dissoc :data :points-cut)
+       (dissoc :data :points-cut :occs-hash)
+       (dissoc-in [:occurrences :all])
+       (dissoc-in [:points :all])
        (assoc  :limit 10000)
        ))
 
