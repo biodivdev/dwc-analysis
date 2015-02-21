@@ -8,7 +8,7 @@
    (read-str (slurp (clojure.java.io/resource file)) :key-fn keyword))
 
 (fact "Can make ALL analysis (simple)"
- (let [result (all-analysis [{:decimalLatitude 10.10 :decimalLongitude 20.20 :year 2000} {:year 1900} {}])]
+ (let [result (all-analysis [{:decimalLatitude 10.10 :decimalLongitude 20.20 :year 2000} {:year "1900"} {}])]
    (:occurrences result)
     => (contains { :count 3 :count_historic 1 :count_recent 2 })
    (:points result)

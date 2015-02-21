@@ -8,7 +8,7 @@ Best used with [dwc](http://github.com/diogok/dwc) lib.
 
 Using leningen:
 
-    [dwc-analysis "0.0.22"]
+    [dwc-analysis "0.0.23"]
 
 All functions expect and vector of hash-maps that represent the occurrences, such as:
 

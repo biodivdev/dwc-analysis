@@ -14,14 +14,19 @@
 (defn now
   [] (java.util.Calendar/getInstance))
 
-(defn year
+(defn this-year
   [] (.get (now) java.util.Calendar/YEAR))
 
-(defn recent?
-  [occ] (or (= (:year occ) nil) (not (number? (:year occ))) (>= (:year occ) (- (year) 50))))
-
 (defn historic?
-  [occ] (and (not (nil? (:year occ))) (number? (:year occ)) (< (:year occ) (- (year) 50))))
+  [occ]
+  (let [year (if (number? (:year occ)) (:year occ) (try (Integer/parseInt (:year occ)) (catch Exception e 0)))]
+    (and (not (nil? year))
+         (number? year) 
+         (> year 0)
+         (< year (- (this-year) 50)))))
+
+(defn recent?
+  [occ]  (not (historic? occ)))
 
 (def all
  (graph/compile
