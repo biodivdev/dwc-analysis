@@ -27,6 +27,8 @@
     => (contains { :count 0 } )
    (:quality result)
     => (contains {:abundance 1.0})
+   (first (:grades (:quality result)))
+    => (contains {:linage 4 :identification 0 :georeference 1})
  )
 )
 

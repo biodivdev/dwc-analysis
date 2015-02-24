@@ -70,10 +70,20 @@
      => (contains {:identification 1.5 :georeference 0.5})
   (analyse [{:occurrenceID "10"} {:occurrenceID "11" :family "Acanthaceae" :scientificName "Teste test" :decimalLatitude 10.10 :decimalLongitude 20.20 :year 2015}  {:year 1950 :locality "Riverrun"}])
      => (contains {:identification 1.0 :linage 2.0 :abundance 2.0})
-  (analyse []) => {:identification 0.0 :linage 0.0 :abundance 0.0 :georeference 0.0}
-  (analyse [nil]) => {:identification 0.0 :linage 0.0 :abundance 0.0 :georeference 0.0}
-  (analyse [nil {}]) => {:identification 0.0 :linage 0.0 :abundance 0.0 :georeference 0.0}
-  (analyse [{}]) => {:identification 0.0 :linage 0.0 :abundance 0.0 :georeference 0.0}
+  (analyse []) => (contains {:identification 0.0 :linage 0.0 :abundance 0.0 :georeference 0.0} )
+  (analyse [nil]) => (contains {:identification 0.0 :linage 0.0 :abundance 0.0 :georeference 0.0} )
+  (analyse [nil {}]) => (contains {:identification 0.0 :linage 0.0 :abundance 0.0 :georeference 0.0} )
+  (analyse [{}]) => (contains {:identification 0.0 :linage 0.0 :abundance 0.0 :georeference 0.0} )
+      )
+
+(fact "Individual grades"
+  (:grades
+  (analyse [{:occurrenceID "x1" :scientificName "A b" :family "Foo"}
+            {:occurrenceID "x2" :scientificName "A b" :family "Foo" :year 2015}]))
+    => [{:occurrenceID "x1" :linage 0 :identification 2 :georeference 0}
+        {:occurrenceID "x2" :linage 5 :identification 2 :georeference 0}
+       ]
+ 
       )
 
 (fact "Real specie: Aphelandra longiflora"

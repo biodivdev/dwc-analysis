@@ -8,7 +8,7 @@ Best used with [dwc](http://github.com/diogok/dwc) lib.
 
 Using leningen:
 
-    [dwc-analysis "0.0.23"]
+    [dwc-analysis "0.0.24"]
 
 All functions expect and vector of hash-maps that represent the occurrences, such as:
 
@@ -111,7 +111,7 @@ A simplistic quality analysis based on completeness.
 
     (use 'dwc-analysis.quality)
     (analyse occurrences)
-    => {:abundance 2.0 :identification 1.0 :georeference 4.5 :linage 3.5}
+    => {:abundance 2.0 :identification 1.0 :georeference 4.5 :linage 3.5 :grades [ :each_occurrence_graded]}
 
 
 ### Risk Analysis

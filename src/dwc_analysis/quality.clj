@@ -53,10 +53,20 @@
 (defn analyse
   [occurrences]
   (let [occurrences (filter #(and (not (nil? %)) (not (empty? %))) occurrences)]
-    {:identification (media occurrences identification)
+    {
+     :identification (media occurrences identification)
      :georeference (media occurrences georeference)
      :linage (media occurrences linage)
-     :abundance (double (abundance occurrences))}
+     :abundance (double (abundance occurrences))
+     :grades 
+      (mapv
+        (fn [occ] 
+          {:occurrenceID   (:occurrenceID occ)
+           :identification (identification occ)
+           :georeference (georeference occ)
+           :linage (linage occ)})
+        occurrences)
+    }
   )
 )
 
