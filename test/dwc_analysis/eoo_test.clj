@@ -27,8 +27,11 @@
 (fact "Calculate EOO convex-hull"
  (let [o0 {:decimalLatitude 10.10 :decimalLongitude 20.20}
        o1 {:decimalLatitude 14.10 :decimalLongitude 21.21}
-       o2 {:decimalLatitude 14.12 :decimalLongitude 21.22}]
+       o2 {:decimalLatitude 14.12 :decimalLongitude 21.22}
+       o3 {:decimalLatitude 1412 :decimalLongitude 2122}]
    (:area (eoo [ o0 o1 o2 ]) ) => (roughly 99)
+   (:area (eoo [ o0 o1 o2 o3]) ) => (roughly 99)
+   (eoo [ o0 o1 o2 o3])  => (eoo [o0 o1 o2]) 
    ))
 
 (fact "Is distinct working"
@@ -41,6 +44,7 @@
 (fact "Bad input"
  (eoo nil) => (contains {:area 0} )
  (eoo []) => (contains {:area 0 } )
+ (eoo [{:decimalLatitude 1500 :decimalLongitude 1600}]) => (contains {:area 0 } )
  (eoo [nil {}]) => (contains {:area 0}))
 
 (fact "Going big"
