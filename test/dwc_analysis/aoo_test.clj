@@ -83,6 +83,8 @@
     => (contains {:area 0 } )
   (aoo [{} nil])
     => (contains {:area 0 } )
+  (aoo [{:decimalLatitude 1800 :decimalLongitude 90000} {:decimalLatitude -5200.0 :decimalLongitude -2700.0} {:decimalLatitude 10.10 :decimalLongitude 10.10}])
+    => (contains {:area 4 } )
       )
 
 (fact "Good output"

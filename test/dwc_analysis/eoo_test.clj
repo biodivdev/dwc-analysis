@@ -44,7 +44,7 @@
 (fact "Bad input"
  (eoo nil) => (contains {:area 0} )
  (eoo []) => (contains {:area 0 } )
- (eoo [{:decimalLatitude 1500 :decimalLongitude 1600}]) => (contains {:area 0 } )
+ (eoo [{:decimalLatitude 1500 :decimalLongitude 1600} {:decimalLatitude -5700 :decimalLongitude -290.0}]) => (contains {:area 0 } )
  (eoo [nil {}]) => (contains {:area 0}))
 
 (fact "Going big"
