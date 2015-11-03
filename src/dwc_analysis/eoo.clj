@@ -16,29 +16,26 @@
        (map #(point (c (first %) (last %))) occs))
      :raw-polygon
       (fnk [points]
-        (if (empty? points) nil
-          (if (>= (count points) 3)
-            (convex-hull
-             (pmap convex-hull 
-              (partition-all 500 points))) 
-            (union (map #(buffer-in-meters % 10000) points)))))
+        (if (or (empty? points) (< (count points) 3)) nil
+          (convex-hull
+           (pmap convex-hull 
+            (partition-all 500 points)))))
      :area 
       (fnk [raw-polygon]
         (if (nil? raw-polygon) 0
           (* (area raw-polygon) 10000)))
      :geo 
       (fnk [raw-polygon area ]
-         (if (nil? raw-polygon) nil 
-         {:type "Feature"
-          :properties {:area area}
-          :geometry (as-geojson raw-polygon)}))
-    }
-  )
-)
+         (if (nil? raw-polygon) nil
+           {:type "Feature"
+            :properties {:area area}
+            :geometry (as-geojson raw-polygon)}
+           ))
+     }))
  
 (defn eoo
   ""
   [occs]
   (-> (eoo-1 {:occurrences occs})
-             (dissoc :points :raw-polygon :occs :occurrences)) )
+     (dissoc :points :raw-polygon :occs :occurrences)))
 

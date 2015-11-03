@@ -14,7 +14,7 @@
    (:points result)
     => (contains { :count 1 :count_historic 0 :count_recent 1 })
    (:area (:recent (:eoo result)))
-    => (roughly 257.63) 
+    =>  0
    (:historic (:eoo result))
     => (contains { :area 0 } )
    (:recent (:aoo result))
