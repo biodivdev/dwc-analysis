@@ -92,8 +92,15 @@
            {:all      (clusters/clusters (:all points-cut))
             :historic (clusters/clusters (:historic points-cut))
             :recent   (clusters/clusters (:recent points-cut))})
+    :aoo-variadic
+      (fnk [points-cut clusters]
+           (println "aooing again")
+           {:all      (aoo/aoo (:all points-cut) (-> clusters :all :max-distance (* 0.1)))
+            :historic (aoo/aoo (:historic points-cut) (-> clusters :historic :max-distance (* 0.1)))
+            :recent   (aoo/aoo (:recent points-cut) (-> clusters :recent :max-distance (* 0.1)))})
     :risk-assessment 
       (fnk [points aoo eoo clusters]
+           (println "assessing")
          (risk/assess {:occurrence_count (count (:all points))
                        :aoo (:area (:all aoo)) 
                        :eoo (:area (:all eoo))

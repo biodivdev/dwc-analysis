@@ -28,13 +28,16 @@
    (:quality result)
     => (contains {:abundance 1.0})
    (first (:grades (:quality result)))
-    => (contains {:linage 4 :identification 0 :georeference 1})
- )
-)
+    => (contains {:linage 4 :identification 0 :georeference 1})))
 
 (fact "A filter"
   (:points (all-analysis [{:decimalLatitude 0.0 :decimalLongitude 0.0} {:decimalLatitude 0 :decimalLongitude 0} {}]))
       => (contains {:count 0 :count_historic 0 :count_recent 0}))
+
+(fact "Can make ALL analysis (medium)"
+ (let [occs (resource "Grazielanthus_arkeocarpus.fixed.json")
+       result (all-analysis occs)]
+   (println (-> result :aoo-variadic :all))))
 
 #_(fact "Work fine with big number. Limit calcs."
   (let [a (all-analysis (map #(hash-map :decimalLatitude (/ % 100) :decimalLongitude (/ % 100)) (range 0 9)))]

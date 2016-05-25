@@ -123,7 +123,7 @@
 (defn aoo
   ([occs] (aoo occs 2))
   ([occs step] 
-   (-> (aoo-1 {:occurrences occs :step step })
+   (-> (aoo-1 {:occurrences occs :step (max 1 step)})
        (dissoc :small-grid :bigger-grid :big-grid :points :occurrences)))
    )
 
