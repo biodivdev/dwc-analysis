@@ -46,7 +46,6 @@
         (count (:features geo)))
      :area 
       (fnk [clusters]
-           (println "PORRA")
         (/ (apply + 0 (map area-in-meters clusters)) 1000000))
      }))
 
