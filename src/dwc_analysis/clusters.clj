@@ -26,7 +26,7 @@
      :buffers 
       (fnk [buffers-raw]
          (->> buffers-raw
-           (mapv #(hash-map :type "Feature" :properties {:area (/ (area-in-meters %) 1000)} :geometry (as-geojson % )))
+           (mapv #(hash-map :type "Feature" :properties {:area (/ (area-in-meters %) 1000000)} :geometry (as-geojson % )))
            (hash-map :type "FeatureCollection" :features)))
      :clusters
       (fnk [buffers-raw] 
@@ -38,15 +38,16 @@
                (.getGeometryN all i))))))
      :geo 
      (fnk [clusters] 
-           (->> clusters
-             (mapv #(hash-map :type "Feature" :properties {:area (/ (area-in-meters %) 1000)} :geometry (as-geojson % )))
-             (hash-map :type "FeatureCollection" :features)))
+       (->> clusters
+         (mapv #(hash-map :type "Feature" :properties {:area (/ (area-in-meters %) 1000000)} :geometry (as-geojson % )))
+         (hash-map :type "FeatureCollection" :features)))
      :count
       (fnk [geo]
         (count (:features geo)))
      :area 
       (fnk [clusters]
-        (/ (apply + 0 (map area-in-meters clusters)) 1000))
+           (println "PORRA")
+        (/ (apply + 0 (map area-in-meters clusters)) 1000000))
      }))
 
 (defn clusters

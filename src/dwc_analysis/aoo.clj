@@ -70,7 +70,8 @@
 
 (def aoo-1
  (graph/compile
-  {:points
+  {:cell_size (fnk [step] step)
+   :points
      (fnk [occurrences] (occs-to-points occurrences))
    :bigger-grid 
      (fnk [points step]

@@ -27,7 +27,7 @@
   (count (:features (:geo (clusters [occ0])))  )=> 1
   (int (:area (clusters [occ0]))) => 0
   (count (:features (:geo (clusters [occ0 occ1]))) ) => 2
-  (int (:area (clusters [occ0 occ1]))) => 6152525
+  (int (:area (clusters [occ0 occ1]))) => (roughly 6152.525)
   (count (:features (:geo (clusters [occ0 occ1 occ2]))) ) => 2
   (count (:features (:geo (clusters [occ0 occ1 occ2 occ3])) )) => 2
 ))
@@ -49,6 +49,10 @@
          occs1 (resource "occs1.json")
          pops (clusters occs)
          pops1 (clusters occs1)]
+     (spit "resources/occs.buffers.geojson" (write-str (:buffers pops)))
+     (spit "resources/occs.pops.geojson" (write-str (:geo pops)))
+     (spit "resources/occs1.buffers.geojson" (write-str (:buffers pops1)))
+     (spit "resources/occs1.pops.geojson" (write-str (:geo pops1)))
      (:buffers pops) => (resource "occs.buffers.geojson")
      (:geo pops) => (resource "occs.pops.geojson")
      (:buffers pops1) => (resource "occs1.buffers.geojson")

@@ -48,7 +48,7 @@
         :count (fnk [all] (count all))
         :recent (fnk [all] (map :occurrenceID (filter recent? all)))
         :count_recent (fnk [recent] (count recent))
-        :historic (fnk [all] (map :occurrecneID (filter historic? all)))
+        :historic (fnk [all] (map :occurrenceID (filter historic? all)))
         :count_historic (fnk [historic] (count historic))})
     :points
      (graph/compile
@@ -94,13 +94,11 @@
             :recent   (clusters/clusters (:recent points-cut))})
     :aoo-variadic
       (fnk [points-cut clusters]
-           (println "aooing again")
            {:all      (aoo/aoo (:all points-cut) (-> clusters :all :max-distance (* 0.1)))
             :historic (aoo/aoo (:historic points-cut) (-> clusters :historic :max-distance (* 0.1)))
             :recent   (aoo/aoo (:recent points-cut) (-> clusters :recent :max-distance (* 0.1)))})
     :risk-assessment 
       (fnk [points aoo eoo clusters]
-           (println "assessing")
          (risk/assess {:occurrence_count (count (:all points))
                        :aoo (:area (:all aoo)) 
                        :eoo (:area (:all eoo))
